@@ -12,6 +12,22 @@ jar <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/m
 pitfall$Trap="pitfall"
 jar$Trap="jar"
 
+#calculate mean richness and abundance of each trap type
+#insects.abun <- rowSums(pitfall[,4:42])
+#pitfall$abundance <- insects.abun
+#insects.rowsums <- rowSums(pitfall[,4:42]>0)
+#pitfall$richness <- insects.rowsums
+
+#insects.abun <- rowSums(jar[,4:42])
+#jar$abundance <- insects.abun
+#insects.rowsums <- rowSums(jar[,4:42]>0)
+#jar$richness <- insects.rowsums
+
+#mean(pitfall$abundance) #14.82
+#mean(pitfall$richness) #5.28
+#mean(jar$abundance) #26.17
+#mean(jar$richness) #6.36
+
 #combine data tables 
 library (plyr)
 total <- rbind.fill (pitfall, jar)
@@ -187,7 +203,7 @@ AICc(richness.model)
 #pairwise comparison 
 rich.emm<-emmeans(richness.model,pairwise~Trap)
 rich.emm
-#results: p = 0.02 -- difference in richness
+#results: p = 0.0238 -- difference in richness
 rich.cld<-multcomp::cld(rich.emm, alpha = 0.05, Letters = LETTERS)
 rich.cld
 
@@ -211,7 +227,7 @@ AICc(diversity.model)
 #pairwise comparison 
 div.emm<-emmeans(diversity.model,pairwise~Trap)
 div.emm
-#results: 0.159 -- no difference in diversity
+#results: 0.1590 -- no difference in diversity
 div.cld<-multcomp::cld(div.emm, alpha = 0.05, Letters = LETTERS)
 div.cld
 
@@ -223,7 +239,7 @@ AICc(evenness.model)
 #pairwise comparison 
 even.emm<-emmeans(evenness.model,pairwise~Trap)
 even.emm
-#results: 0.15 -- no difference in evenness
+#results: 0.1514 -- no difference in evenness
 even.cld<-multcomp::cld(even.emm, alpha = 0.05, Letters = LETTERS)
 even.cld
 
