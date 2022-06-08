@@ -26,10 +26,10 @@ env.matrix<-total[c(1:3,43)]
 com.matrix<-total[c(4:42)]
 
 #ordination by NMDS
-NMDS<-metaMDS(com.matrix, distance="bray", k=2, autotransform=FALSE, trymax=100)
+NMDS<-metaMDS(com.matrix, distance="bray", k=2, autotransform=TRUE, trymax=100)
 NMDS
 stressplot(NMDS)
-#stress=0.21
+#stress=0.26
 
 #what taxa to display using "taxa"
 #flying_func<-as.vector(t(taxa[1,]))
@@ -40,6 +40,7 @@ stressplot(NMDS)
 #include_func<-include_func[-1]
 
 #plot functional NMDS
+#8x11
 plot(NMDS, disp='sites', type="n")
 #title(main="Functional", adj = 0.01, line = -2, cex.main=2.5)
 #add ellipsoids with ordiellipse
@@ -49,7 +50,7 @@ ordiellipse(NMDS, env.matrix$Trap, draw="polygon", col="#009E73",kind="sd", conf
 points(NMDS, display="sites", select=which(env.matrix$Trap=="pitfall"),pch=19, col="#E69F00")
 points(NMDS, display="sites", select=which(env.matrix$Trap=="jar"), pch=17, col="#009E73")
 #add legend
-legend(1.15,1.195, title=NULL, pch=c(19,17), col=c("#E69F00","#009E73"), cex=.7, legend=c("Pitfall", "Jar ramp"))
+legend(1.123,1.06, title=NULL, pch=c(19,17), col=c("#E69F00","#009E73"), cex=.7, legend=c("Pitfall", "Jar ramp"))
 
 #add insect taxa as text
 #ordilabel(NMDS, display="species", select =which (include_func==TRUE & crawling_func == TRUE), cex=0.6, col="black", fill="white")
@@ -235,10 +236,9 @@ abundance.plot<-ggplot(total, aes(x =Trap, y = abundance, fill=Trap))+
   theme_bw()+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
-  labs(x="", y="")+
-  scale_y_continuous(trans="log10")+
+  labs(x="", y="Abundance")+
   scale_fill_manual(values=c("#009E73","#E69F00"))+
-  geom_text(data=abun.cld, aes(y = 75, label = .group))
+  geom_text(data=abun.cld, aes(y = 80, label = .group))
 abundance.plot
 
 #richness plot
@@ -247,7 +247,7 @@ richness.plot<-ggplot(total, aes(x =Trap, y = richness, fill=Trap))+
   theme_bw()+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
-  labs(x="", y="")+
+  labs(x="", y="Richness")+
   scale_fill_manual(values=c("#009E73","#E69F00"))+
   geom_text(data=rich.cld, aes(y = 15, label = .group))
 richness.plot
@@ -258,7 +258,7 @@ diversity.plot<-ggplot(total, aes(x =Trap, y = diversity, fill=Trap))+
   theme_bw()+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
-  labs(x="", y="")+
+  labs(x="", y="Shannon diversity")+
   scale_fill_manual(values=c("#009E73","#E69F00"))+
   geom_text(data=div.cld, aes(y = 2.5, label = .group))
 diversity.plot
@@ -269,7 +269,7 @@ evenness.plot<-ggplot(total, aes(x =Trap, y = evenness, fill=Trap))+
   theme_bw()+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
-  labs(x="", y="")+
+  labs(x="", y="Evenness")+
   scale_fill_manual(values=c("#009E73","#E69F00"))+
   geom_text(data=even.cld, aes(y = 1.1, label = .group))
 evenness.plot
@@ -277,7 +277,7 @@ evenness.plot
 #Mush order plots together
 library(ggpubr) 
 metrics<- ggarrange(richness.plot, abundance.plot, diversity.plot, evenness.plot,
-                              labels = c("A", "B", "C", "D"),
+                              #labels = c("A", "B", "C", "D"),
                               ncol = 2, nrow = 2,
                               common.legend = TRUE, legend = "bottom")
 pdf("boxplots.pdf", height=6, width=8) #height and width in inches
