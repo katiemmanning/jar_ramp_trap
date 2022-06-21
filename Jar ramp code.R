@@ -12,7 +12,7 @@ jar <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/m
 pitfall$Trap="pitfall"
 jar$Trap="jar"
 
-#calculate mean richness and abundance of each trap type
+#calculate mean and SE richness and abundance of each trap type
 #insects.abun <- rowSums(pitfall[,4:42])
 #pitfall$abundance <- insects.abun
 #insects.rowsums <- rowSums(pitfall[,4:42]>0)
@@ -24,9 +24,16 @@ jar$Trap="jar"
 #jar$richness <- insects.rowsums
 
 #mean(pitfall$abundance) #14.82
+#sd(pitfall$abundance)/sqrt(10) #3.73
+
 #mean(pitfall$richness) #5.28
+#sd(pitfall$richness)/sqrt(10) #0.69
+
 #mean(jar$abundance) #26.17
+#sd(jar$abundance)/sqrt(10) #4.97
+
 #mean(jar$richness) #6.36
+#sd(jar$richness)/sqrt(10) #0.64
 
 #combine data tables 
 library (plyr)
@@ -55,8 +62,8 @@ stressplot(NMDS)
 #include_func<-as.vector(t(taxa[3,]))
 #include_func<-include_func[-1]
 
-#plot functional NMDS
-#8x11
+#plot NMDS
+#8x12
 plot(NMDS, disp='sites', type="n")
 #title(main="Functional", adj = 0.01, line = -2, cex.main=2.5)
 #add ellipsoids with ordiellipse
@@ -66,13 +73,13 @@ ordiellipse(NMDS, env.matrix$Trap, draw="polygon", col="#009E73",kind="sd", conf
 points(NMDS, display="sites", select=which(env.matrix$Trap=="pitfall"),pch=19, col="#E69F00")
 points(NMDS, display="sites", select=which(env.matrix$Trap=="jar"), pch=17, col="#009E73")
 #add legend
-legend(1.123,1.06, title=NULL, pch=c(19,17), col=c("#E69F00","#009E73"), cex=.7, legend=c("Pitfall", "Jar ramp"))
+legend(0.95,1.063, title=NULL, pch=c(19,17), col=c("#E69F00","#009E73"), cex=1.4, legend=c("Pitfall", "Jar ramp"))
 
 #add insect taxa as text
 #ordilabel(NMDS, display="species", select =which (include_func==TRUE & crawling_func == TRUE), cex=0.6, col="black", fill="white")
 #ordilabel(NMDS, display="species", select =which (include_func==TRUE & flying_func == TRUE), cex=0.6, col="white", fill="black")
 
-#bootstrapping and testing for differences between the groups (traps)
+#PERMANOVA
 fit<-adonis(com.matrix ~ Trap, data = env.matrix, permutations = 999, method="bray")
 fit
 #P-value = 0.001
@@ -301,3 +308,91 @@ metrics
 dev.off()
 metrics
 
+######
+
+#species accumulation
+library (BiodiversityR)
+library(ggplot2)
+
+#individual curves for each trap type
+pitfall.com.matrix<-pitfall[c(4:42)]
+pitfall_curve<-accumresult(pitfall.com.matrix, method = "exact", permutations = 1000)
+
+jar.com.matrix<-jar[c(4:42)]
+jar_curve<-accumresult(jar.com.matrix, method = "exact", permutations = 1000)
+
+#first-order jackknife estimates are based on the number of singletons
+#second-order jackknife estimates are based on the number of singletons and doubletons
+
+#calculates species richness for each sample
+specnumber(com.matrix) #ranges from 1 to 12
+
+#calculates species richness by treatment (trap)
+specnumber(com.matrix, groups = total$Trap) #jar=26; pitfall=21
+
+#total richness and jackknife
+rich <- diversityresult(com.matrix, y=NULL, index = "richness")
+rich # 27
+j1 <- diversityresult(com.matrix, y=NULL, index = "jack1")
+j1 # 29.962963
+#90%
+j2 <- diversityresult(com.matrix, y=NULL, index = "jack2")
+j2 # 29.03642
+#93%
+
+#jar jackknife; richness = 26
+j1.j <- diversityresult(jar.com.matrix, y=NULL, index = "jack1")
+j1.j # 32.833333
+#79%
+j2.j <- diversityresult(jar.com.matrix, y=NULL, index = "jack2")
+j2.j # 35.783391
+#73%
+
+#pitfall jackknife; richness = 21
+j1.p <- diversityresult(pitfall.com.matrix, y=NULL, index = "jack1")
+j1.p # 24.897436
+#84%
+j2.p <- diversityresult(pitfall.com.matrix, y=NULL, index = "jack2")
+j2.p # 25.921053
+#81%
+
+#BiodiversityR::accumcomp
+Accum.1_functional <- accumcomp(com.matrix, y=env.matrix, factor='Trap', 
+                                method='random', conditioned=FALSE, plotit=FALSE)
+Accum.1_functional
+
+#BiodiversityR::accumcomp.long
+accum.long1_functional <- accumcomp.long(Accum.1_functional, ci=NA, label.freq=5)
+head(accum.long1_functional)
+
+#plot
+#empty canvas
+BioR.theme <- theme(
+  panel.background = element_blank(),
+  panel.border = element_blank(),
+  panel.grid = element_blank(),
+  axis.line = element_line("gray25"),
+  text = element_text(size = 12),
+  axis.text = element_text(size = 10, colour = "gray25"),
+  axis.title = element_text(size = 14, colour = "gray25"),
+  legend.title = element_text(size = 14),
+  legend.text = element_text(size = 14),
+  legend.key = element_blank())
+
+accum <- ggplot(data=accum.long1_functional, aes(x = Sites, y = Richness, ymax = UPR, ymin = LWR)) + 
+  scale_x_continuous(expand=c(0, 1), sec.axis = dup_axis(labels=NULL, name=NULL)) +
+  scale_y_continuous(sec.axis = dup_axis(labels=NULL, name=NULL)) +
+  scale_color_manual(values=c("#009E73","#E69F00"))+
+  scale_shape_manual(values=c(19,17,15,25))+
+  geom_line(aes(colour=Grouping), size=0.1) +
+  geom_ribbon(aes(colour=Grouping, fill=after_scale(alpha(colour, 0.3))), 
+              show.legend=FALSE, linetype = 0) + 
+  geom_point(data=subset(accum.long1_functional, labelit==TRUE), 
+             aes(colour=Grouping, shape=Grouping), size=3) +
+  BioR.theme +
+  labs(x = "", y = "", colour = "Trap", shape = "Trap")
+accum
+
+pdf("accum.pdf", height=6, width=8) #height and width in inches
+accum
+dev.off()
