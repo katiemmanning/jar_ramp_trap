@@ -2,9 +2,9 @@
 
 #bring in data sets from github
 
-pitfall <- read.csv("",na.strings = NULL)
+pitfall <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Insect%20ID%202020_pitfall_functional.csv",na.strings = NULL)
 
-jar <- read.csv("",na.strings = NULL)
+jar <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Insect%20ID%202020_jarramp_functional.csv",na.strings = NULL)
 
 #taxa <- read.csv("")
 
@@ -13,27 +13,27 @@ pitfall$Trap="pitfall"
 jar$Trap="jar"
 
 #calculate mean and SE richness and abundance of each trap type
-insects.abun <- rowSums(pitfall[,4:30])
-pitfall$abundance <- insects.abun
-insects.rowsums <- rowSums(pitfall[,4:30]>0)
-pitfall$richness <- insects.rowsums
+#insects.abun <- rowSums(pitfall[,4:30])
+#pitfall$abundance <- insects.abun
+#insects.rowsums <- rowSums(pitfall[,4:30]>0)
+#pitfall$richness <- insects.rowsums
 
-insects.abun <- rowSums(jar[,4:30])
-jar$abundance <- insects.abun
-insects.rowsums <- rowSums(jar[,4:30]>0)
-jar$richness <- insects.rowsums
+#insects.abun <- rowSums(jar[,4:30])
+#jar$abundance <- insects.abun
+#insects.rowsums <- rowSums(jar[,4:30]>0)
+#jar$richness <- insects.rowsums
 
-mean(pitfall$abundance) #14.82
-sd(pitfall$abundance)/sqrt(10) #3.73
+#mean(pitfall$abundance) #14.82
+#sd(pitfall$abundance)/sqrt(10) #3.73
 
-mean(pitfall$richness) #5.28
-sd(pitfall$richness)/sqrt(10) #0.69
+#mean(pitfall$richness) #5.28
+#sd(pitfall$richness)/sqrt(10) #0.69
 
-mean(jar$abundance) #26.17
-sd(jar$abundance)/sqrt(10) #4.97
+#mean(jar$abundance) #26.17
+#sd(jar$abundance)/sqrt(10) #4.97
 
-mean(jar$richness) #6.36
-sd(jar$richness)/sqrt(10) #0.64
+#mean(jar$richness) #6.36
+#sd(jar$richness)/sqrt(10) #0.64
 
 #combine data tables 
 library (plyr)
@@ -49,7 +49,7 @@ env.matrix<-total[c(1:3,31)]
 com.matrix<-total[c(4:30)]
 
 #ordination by NMDS
-NMDS<-metaMDS(com.matrix, distance="bray", k=2, autotransform=FALSE, trymax=100)
+NMDS<-metaMDS(com.matrix, distance="bray", k=2, autotransform=TRUE, trymax=100)
 NMDS
 stressplot(NMDS)
 #stress=0.26
@@ -93,19 +93,19 @@ anova(betadisper(distances_data, env.matrix$Trap))
 
 ################
 #calculate Abundance
-insects.abun <- rowSums(total[,4:42])
+insects.abun <- rowSums(total[,4:30])
 total$abundance <- insects.abun
 
 #calculate Richness
-insects.rowsums <- rowSums(total[,4:42]>0)
+insects.rowsums <- rowSums(total[,4:30]>0)
 total$richness <- insects.rowsums
 
 #calculate Shannon diversity
-diversity <-diversity(total[,4:42])
+diversity <-diversity(total[,4:30])
 total$diversity <-diversity
 
 #calculate Evenness
-evenness <-diversity/log(specnumber(total[,4:42]))
+evenness <-diversity/log(specnumber(total[,4:30]))
 total$evenness <- evenness
 
 #######
@@ -315,10 +315,10 @@ library (BiodiversityR)
 library(ggplot2)
 
 #individual curves for each trap type
-pitfall.com.matrix<-pitfall[c(4:42)]
+pitfall.com.matrix<-pitfall[c(4:30)]
 pitfall_curve<-accumresult(pitfall.com.matrix, method = "exact", permutations = 1000)
 
-jar.com.matrix<-jar[c(4:42)]
+jar.com.matrix<-jar[c(4:30)]
 jar_curve<-accumresult(jar.com.matrix, method = "exact", permutations = 1000)
 
 #first-order jackknife estimates are based on the number of singletons
