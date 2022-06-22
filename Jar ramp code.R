@@ -2,9 +2,9 @@
 
 #bring in data sets from github
 
-pitfall <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Insect%20ID%202020_pitfall_functional.csv",na.strings = NULL)
+pitfall <- read.csv("",na.strings = NULL)
 
-jar <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Insect%20ID%202020_jarramp_functional.csv",na.strings = NULL)
+jar <- read.csv("",na.strings = NULL)
 
 #taxa <- read.csv("")
 
@@ -13,27 +13,27 @@ pitfall$Trap="pitfall"
 jar$Trap="jar"
 
 #calculate mean and SE richness and abundance of each trap type
-#insects.abun <- rowSums(pitfall[,4:42])
-#pitfall$abundance <- insects.abun
-#insects.rowsums <- rowSums(pitfall[,4:42]>0)
-#pitfall$richness <- insects.rowsums
+insects.abun <- rowSums(pitfall[,4:30])
+pitfall$abundance <- insects.abun
+insects.rowsums <- rowSums(pitfall[,4:30]>0)
+pitfall$richness <- insects.rowsums
 
-#insects.abun <- rowSums(jar[,4:42])
-#jar$abundance <- insects.abun
-#insects.rowsums <- rowSums(jar[,4:42]>0)
-#jar$richness <- insects.rowsums
+insects.abun <- rowSums(jar[,4:30])
+jar$abundance <- insects.abun
+insects.rowsums <- rowSums(jar[,4:30]>0)
+jar$richness <- insects.rowsums
 
-#mean(pitfall$abundance) #14.82
-#sd(pitfall$abundance)/sqrt(10) #3.73
+mean(pitfall$abundance) #14.82
+sd(pitfall$abundance)/sqrt(10) #3.73
 
-#mean(pitfall$richness) #5.28
-#sd(pitfall$richness)/sqrt(10) #0.69
+mean(pitfall$richness) #5.28
+sd(pitfall$richness)/sqrt(10) #0.69
 
-#mean(jar$abundance) #26.17
-#sd(jar$abundance)/sqrt(10) #4.97
+mean(jar$abundance) #26.17
+sd(jar$abundance)/sqrt(10) #4.97
 
-#mean(jar$richness) #6.36
-#sd(jar$richness)/sqrt(10) #0.64
+mean(jar$richness) #6.36
+sd(jar$richness)/sqrt(10) #0.64
 
 #combine data tables 
 library (plyr)
@@ -44,12 +44,12 @@ total <- rbind.fill (pitfall, jar)
 library (vegan)
 
 #Create matrix of environmental variables
-env.matrix<-total[c(1:3,43)]
+env.matrix<-total[c(1:3,31)]
 #create matrix of community variables
-com.matrix<-total[c(4:42)]
+com.matrix<-total[c(4:30)]
 
 #ordination by NMDS
-NMDS<-metaMDS(com.matrix, distance="bray", k=2, autotransform=TRUE, trymax=100)
+NMDS<-metaMDS(com.matrix, distance="bray", k=2, autotransform=FALSE, trymax=100)
 NMDS
 stressplot(NMDS)
 #stress=0.26
