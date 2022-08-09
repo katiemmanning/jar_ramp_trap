@@ -2,15 +2,15 @@
 
 #bring in order data sets from github
 
-pitfall_order <- read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/Insect%20ID%202020_pitfall_order.csv",na.strings = NULL)
+pitfall_order <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/Insect%20ID%202020_pitfall_order.csv",na.strings = NULL)
 
-ramp_order <- read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/Insect%20ID%202020_yellowramp_order.csv",na.strings = NULL)
+ramp_order <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/Insect%20ID%202020_yellowramp_order.csv",na.strings = NULL)
 
-jar_order <- read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/Insect%20ID%202020_jarramp_order.csv",na.strings = NULL)
+jar_order <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/Insect%20ID%202020_jarramp_order.csv",na.strings = NULL)
 
-sticky_order <- read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/Insect%20ID%202020_stickycard_order.csv",na.strings = NULL)
+sticky_order <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/Insect%20ID%202020_stickycard_order.csv",na.strings = NULL)
 
-taxa_order <- read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/Order%20taxa.csv")
+taxa_order <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/Order%20taxa.csv")
 
 #add trap type as a column on each data file
 pitfall_order$Trap="pitfall"
@@ -391,15 +391,15 @@ dev.off()
 ############################################################################
 #bring in functional data sets from github
 
-pitfall <- read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/Insect%20ID%202020_pitfall_functional.csv",na.strings = NULL)
+pitfall <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/Insect%20ID%202020_pitfall_functional.csv",na.strings = NULL)
 
-ramp <- read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/Insect%20ID%202020_yellowramp_functional.csv",na.strings = NULL)
+ramp <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/Insect%20ID%202020_yellowramp_functional.csv",na.strings = NULL)
 
-jar <- read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/Insect%20ID%202020_jarramp_functional.csv",na.strings = NULL)
+jar <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/Insect%20ID%202020_jarramp_functional.csv",na.strings = NULL)
 
-sticky <- read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/Insect%20ID%202020_stickycard_functional.csv",na.strings = NULL)
+sticky <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/Insect%20ID%202020_stickycard_functional.csv",na.strings = NULL)
 
-taxa <- read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/Functional%20taxa.csv")
+taxa <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/Functional%20taxa.csv")
 
 #add trap type as a column on each data file
 pitfall$Trap="pitfall"
@@ -663,9 +663,9 @@ functionalfigure
 
 #flying vs crawling
 #input data
-flying<-read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/flying.csv")
-crawling<-read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/crawling.csv")
-intermediate<-read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/intermediate.csv")
+flying<-read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/flying.csv")
+crawling<-read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/crawling.csv")
+intermediate<-read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/intermediate.csv")
 
 str(flying) #trap is listed as character 
 flying$Trap <- as.factor(flying$Trap)
@@ -999,15 +999,15 @@ dev.off()
 
 #bring in beetle data sets from github
 
-pitfall_beetle <- read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/2020%20beetles_pitfall.csv",na.strings = NULL)
+pitfall_beetle <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/2020%20beetles_pitfall.csv",na.strings = NULL)
 
-ramp_beetle <- read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/2020%20beetles_yellowramp.csv",na.strings = NULL)
+ramp_beetle <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/2020%20beetles_yellowramp.csv",na.strings = NULL)
 
-jar_beetle <- read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/2020%20beetles_jarramp.csv",na.strings = NULL)
+jar_beetle <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/2020%20beetles_jarramp.csv",na.strings = NULL)
 
-sticky_beetle <- read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/2020%20beetles_stickycard.csv",na.strings = NULL)
+sticky_beetle <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/2020%20beetles_stickycard.csv",na.strings = NULL)
 
-taxa_beetle <- read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/beetle%20taxa.csv")
+taxa_beetle <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/beetle%20taxa.csv")
 
 #add trap type as a column on each data file
 pitfall_beetle$Trap="pitfall"
@@ -1950,9 +1950,49 @@ influenceIndexPlot(evenness.model_beetle, vars = c("Cook"), id = list(n = 3))
 
 #Figure 2 - step by step jar trap construction
 
-#Figure 3 - jar ramp trap with lid
+#Figure 3 - accumulation plots
+#a - order
+#b - functional 
+#c - beetles
 
-#Figure 4 - multipanel NMDS
+figure3 <- ggarrange(order_accum, functional_accum, beetle_accum,
+                     labels = c("A", "B", "C"),
+                     ncol = 1, nrow = 3,
+                     common.legend = TRUE, legend = "bottom")
+figure3
+
+pdf("Figure 3.pdf", height=6, width=6) #height and width in inches
+figure3
+dev.off()
+
+#Figure 4 - trap comparison box plots
+#a - order
+library(ggpubr) 
+orderfigure <- ggarrange(richness.plot_order, abundance.plot_order, diversity.plot_order, evenness.plot_order,
+                         ncol = 4, nrow = 1)
+orderfigure
+
+#b - functional 
+functionalfigure <- ggarrange(richness.plot, abundance.plot, diversity.plot, evenness.plot,
+                              ncol = 4, nrow = 1)
+functionalfigure
+
+#c - beetle
+beetlefigure <- ggarrange(richness.plot_beetle, abundance.plot_beetle, diversity.plot_beetle, evenness.plot_beetle,
+                          ncol = 4, nrow = 1,
+                          common.legend = TRUE, legend = "bottom")
+beetlefigure
+
+figure4 <- ggarrange(orderfigure, functionalfigure, beetlefigure,
+                     labels = c("A", "B", "C"),
+                     ncol = 1, nrow = 3,
+                     common.legend = TRUE, legend = "bottom")
+pdf("Figure 4.pdf", height=10, width=15) #height and width in inches
+figure4
+dev.off()
+figure4
+
+#Figure 5 - multipanel NMDS
 
 #if (!require(devtools)) {
   #install.packages("devtools")
@@ -1961,7 +2001,7 @@ influenceIndexPlot(evenness.model_beetle, vars = c("Cook"), id = list(n = 3))
 
 library(ggvegan)
 
-pdf("Figure 4.pdf", height=9, width=7)
+pdf("Figure 5.pdf", height=9, width=7)
 par(mfrow=c(3,1), mar=c(4.1, 4.8, 1.5, 8.1),xpd=TRUE) 
 
 plot(NMDS_order, disp='sites', type='n')
@@ -1991,48 +2031,7 @@ ordilabel(NMDS, display="species", select =which (include_func==TRUE & crawling_
 ordilabel(NMDS, display="species", select =which (include_func==TRUE & flying_func == TRUE), cex=0.6, col="white", fill="black")
 ordilabel(NMDS, display="species", select =which (include_func==TRUE & intermediate_func == TRUE), cex=0.6, col="black", fill="gray")
 text(-4.1, 1, "B", cex=2)
-
-plot(NMDS_beetle, disp='sites', type='n')
-ordiellipse(NMDS_beetle, env.matrix_beetle$Trap, draw="polygon", col="#E69F00",kind="sd", conf=0.95, label=FALSE, show.groups = "pitfall")
-ordiellipse(NMDS_beetle, env.matrix_beetle$Trap, draw="polygon", col="#009E73",kind="sd", conf=0.95, label=FALSE, show.groups = "jar") 
-ordiellipse(NMDS_beetle, env.matrix_beetle$Trap, draw="polygon", col="#F0E442",kind="sd", conf=0.95, label=FALSE, show.groups = "ramp") 
-ordiellipse(NMDS_beetle, env.matrix_beetle$Trap, draw="polygon", col="#CC79A7",kind="sd", conf=0.95, label=FALSE, show.groups = "sticky")
-points(NMDS_beetle, display="sites", select=which(env.matrix_beetle$Trap=="pitfall"),pch=19, col="#E69F00")
-points(NMDS_beetle, display="sites", select=which(env.matrix_beetle$Trap=="jar"), pch=17, col="#009E73")
-points(NMDS_beetle, display="sites", select=which(env.matrix_beetle$Trap=="ramp"), pch=15, col="#F0E442")
-points(NMDS_beetle, display="sites", select=which(env.matrix_beetle$Trap=="sticky"), pch=25, col="#CC79A7")
-ordilabel(NMDS_beetle, display="species", select =which (include_beetle==TRUE & crawling_beetle == TRUE), cex=0.6, col="black", fill="white")
-ordilabel(NMDS_beetle, display="species", select =which (include_beetle==TRUE & flying_beetle == TRUE), cex=0.6, col="white", fill="black")
-ordilabel(NMDS_beetle, display="species", select =which (include_beetle==TRUE & intermediate_beetle == TRUE), cex=0.6, col="black", fill="grey")
-text(-10.5, 3.3, "C", cex=2)
 dev.off()
-
-#Figure 5 - trap comparison box plots
-#a - order
-library(ggpubr) 
-orderfigure <- ggarrange(richness.plot_order, abundance.plot_order, diversity.plot_order, evenness.plot_order,
-                         ncol = 4, nrow = 1)
-orderfigure
-
-#b - functional 
-functionalfigure <- ggarrange(richness.plot, abundance.plot, diversity.plot, evenness.plot,
-                              ncol = 4, nrow = 1)
-functionalfigure
-
-#c - beetle
-beetlefigure <- ggarrange(richness.plot_beetle, abundance.plot_beetle, diversity.plot_beetle, evenness.plot_beetle,
-                          ncol = 4, nrow = 1,
-                          common.legend = TRUE, legend = "bottom")
-beetlefigure
-
-figure5 <- ggarrange(orderfigure, functionalfigure, beetlefigure,
-                          labels = c("A", "B", "C"),
-                          ncol = 1, nrow = 3,
-                          common.legend = TRUE, legend = "bottom")
-pdf("Figure 5.pdf", height=10, width=15) #height and width in inches
-figure5
-dev.off()
-figure5
 
 #Figure 6 - flying vs crawling vs intermediate (functional level)
 figure6 <- ggarrange(abundance.plot_flying, abundance.plot_crawling,abundance.plot_intermediate,richness.plot_flying,richness.plot_crawling,richness.plot_intermediate,
@@ -2044,25 +2043,9 @@ pdf("Figure 6.pdf", height=6, width=8) #height and width in inches
 figure6
 dev.off()
 
-#Figure 7 - accumulation plots
-#a - order
-#b - functional 
-#c - beetles
-
-figure7 <- ggarrange(order_accum, functional_accum, beetle_accum,
-                     labels = c("A", "B", "C"),
-                     ncol = 1, nrow = 3,
-                     common.legend = TRUE, legend = "bottom")
-figure7
-
-pdf("Figure 7.pdf", height=6, width=6) #height and width in inches
-figure7
-dev.off()
-
-
 #Supplementary figure 1 - trap size vs mean catch
 #bring in data
-size <- read.csv("https://raw.githubusercontent.com/katiemmanning/trapping_calibration/main/Data/Supp%20fig%201%20data.csv",na.strings = NULL)
+size <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/Supp%20fig%201%20data.csv",na.strings = NULL)
 library(ggplot2)
 
 trapsize <- ggplot(size, aes(x=Surface.area, y=Mean.catch, color=Trap)) +
@@ -2076,4 +2059,8 @@ trapsize
 pdf("Supp figure 1.pdf", height=6, width=8) #height and width in inches
 trapsize
 dev.off()
+
+#Table S1 - abundances 
+#Table S2 - comparisons
+#Table S3 - functional comparisons
 
