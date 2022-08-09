@@ -2030,7 +2030,7 @@ points(NMDS, display="sites", select=which(env.matrix$Trap=="sticky"), pch=25, c
 ordilabel(NMDS, display="species", select =which (include_func==TRUE & crawling_func == TRUE), cex=0.6, col="black", fill="white")
 ordilabel(NMDS, display="species", select =which (include_func==TRUE & flying_func == TRUE), cex=0.6, col="white", fill="black")
 ordilabel(NMDS, display="species", select =which (include_func==TRUE & intermediate_func == TRUE), cex=0.6, col="black", fill="gray")
-text(-4.1, 1, "B", cex=2)
+text(-3.7, 1.5, "B", cex=2)
 dev.off()
 
 #Figure 6 - flying vs crawling vs intermediate (functional level)
