@@ -380,7 +380,7 @@ order_accum <- ggplot(data=accum.long1_order, aes(x = Sites, y = Richness, ymax 
   geom_point(data=subset(accum.long1_order, labelit==TRUE), 
              aes(colour=Grouping, shape=Grouping), size=3) +
   BioR.theme +
-  labs(x = "", y = "Richness", colour = "Trap", shape = "Trap")
+  labs(x = "", y = "", colour = "Trap", shape = "Trap")
 order_accum
 
 pdf("order_accum.pdf", height=6, width=8) #height and width in inches
@@ -1954,16 +1954,24 @@ influenceIndexPlot(evenness.model_beetle, vars = c("Cook"), id = list(n = 3))
 #a - order
 #b - functional 
 #c - beetles
+require(grid)   # for the textGrob() function
 
 figure3 <- ggarrange(order_accum, functional_accum, beetle_accum,
                      labels = c("A", "B", "C"),
                      ncol = 1, nrow = 3,
                      common.legend = TRUE, legend = "bottom")
+figure3 <- annotate_figure(figure3, left = textGrob("Richness", rot = 90, vjust = 0.7, hjust = 0, gp = gpar(cex = 1.2)))
 figure3
-
 pdf("Figure 3.pdf", height=6, width=6) #height and width in inches
 figure3
 dev.off()
+
+library(cowplot)
+library(patchwork)
+plots <- align_patches(order_accum, functional_accum, beetle_accum, align = 'v', axis = 'l')
+bottom_row <- plot_grid(plots[[3]], beetle_accum, nrow = 1)
+
+plot_grid(plots[[1]], bottom_row, ncol = 1)
 
 #Figure 4 - trap comparison box plots
 #a - order
