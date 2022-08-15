@@ -1967,6 +1967,11 @@ figure3
 dev.off()
 
 library(cowplot)
+aligned <- align_patches(order_accum, functional_accum, beetle_accum, align = "v")
+ggdraw(aligned[[1]])
+ggdraw(aligned[[2]])
+ggdraw(aligned[[3]])
+
 library(patchwork)
 plots <- align_patches(order_accum, functional_accum, beetle_accum, align = 'v', axis = 'l')
 bottom_row <- plot_grid(plots[[3]], beetle_accum, nrow = 1)
