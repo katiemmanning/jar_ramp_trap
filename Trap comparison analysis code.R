@@ -1954,17 +1954,6 @@ influenceIndexPlot(evenness.model_beetle, vars = c("Cook"), id = list(n = 3))
 #a - order
 #b - functional 
 #c - beetles
-require(grid)   # for the textGrob() function
-
-figure3 <- ggarrange(order_accum, functional_accum, beetle_accum,
-                     labels = c("A", "B", "C"),
-                     ncol = 1, nrow = 3,
-                     common.legend = TRUE, legend = "bottom")
-figure3 <- annotate_figure(figure3, left = textGrob("Richness", rot = 90, vjust = 0.7, hjust = 0, gp = gpar(cex = 1.2)))
-figure3
-pdf("Figure 3.pdf", height=6, width=6) #height and width in inches
-figure3
-dev.off()
 
 library(patchwork)
 figure3 <- order_accum / functional_accum / beetle_accum + plot_layout(guides = "collect") + plot_annotation(tag_levels = "A") & theme(legend.position = "bottom") 
@@ -1972,9 +1961,6 @@ figure3
 pdf("Figure 3.pdf", height=6, width=6) #height and width in inches
 figure3
 dev.off()
-
-
-final <- annotate_figure(figure3, left = textGrob("Richness", rot = 90, vjust = 0.7, hjust = 0, gp = gpar(cex = 1.2)))
 
 #Figure 4 - trap comparison box plots
 #a - order
