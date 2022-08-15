@@ -987,7 +987,7 @@ functional_accum <- ggplot(data=accum.long1_functional, aes(x = Sites, y = Richn
   geom_point(data=subset(accum.long1_functional, labelit==TRUE), 
              aes(colour=Grouping, shape=Grouping), size=3) +
   BioR.theme +
-  labs(x = "", y = "", colour = "Trap", shape = "Trap")
+  labs(x = "", y = "Richness", colour = "Trap", shape = "Trap")
 functional_accum
 
 pdf("functional_accum.pdf", height=6, width=8) #height and width in inches
@@ -1966,17 +1966,15 @@ pdf("Figure 3.pdf", height=6, width=6) #height and width in inches
 figure3
 dev.off()
 
-library(cowplot)
-aligned <- align_patches(order_accum, functional_accum, beetle_accum, align = "v")
-ggdraw(aligned[[1]])
-ggdraw(aligned[[2]])
-ggdraw(aligned[[3]])
-
 library(patchwork)
-plots <- align_patches(order_accum, functional_accum, beetle_accum, align = 'v', axis = 'l')
-bottom_row <- plot_grid(plots[[3]], beetle_accum, nrow = 1)
+figure3 <- order_accum / functional_accum / beetle_accum + plot_layout(guides = "collect") + plot_annotation(tag_levels = "A") & theme(legend.position = "bottom") 
+figure3
+pdf("Figure 3.pdf", height=6, width=6) #height and width in inches
+figure3
+dev.off()
 
-plot_grid(plots[[1]], bottom_row, ncol = 1)
+
+final <- annotate_figure(figure3, left = textGrob("Richness", rot = 90, vjust = 0.7, hjust = 0, gp = gpar(cex = 1.2)))
 
 #Figure 4 - trap comparison box plots
 #a - order
