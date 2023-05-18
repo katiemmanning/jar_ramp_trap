@@ -1055,6 +1055,7 @@ include_beetle<-as.vector(t(taxa_beetle[4,]))
 include_beetle<-include_beetle[-1]
 
 #plot beetle NMDS
+#8x10
 plot(NMDS_beetle, disp='sites', type="n")
 title(main="Focal taxa", adj = 0.01, line = -2, cex.main=2.5)
 #add ellipsoids with ordiellipse
@@ -1068,7 +1069,7 @@ points(NMDS_beetle, display="sites", select=which(env.matrix_beetle$Trap=="jar")
 points(NMDS_beetle, display="sites", select=which(env.matrix_beetle$Trap=="ramp"), pch=15, col="#F0E442")
 points(NMDS_beetle, display="sites", select=which(env.matrix_beetle$Trap=="sticky"), pch=25, col="#CC79A7")
 #add legend
-#legend(1.5,1.5, title=NULL, pch=c(19,17,15,25), col=c("#E69F00","#009E73","#F0E442","#CC79A7"), cex=.7, legend=c("Pitfall", "Jar ramp", "Yellow ramp", "Yellow sticky card"))
+legend(4.26,4.41, title=NULL, pch=c(19,17,15,25), col=c("#E69F00","#009E73","#F0E442","#CC79A7"), cex=.7, legend=c("Pitfall", "Jar ramp", "Yellow ramp", "Yellow sticky card"))
 #add taxa as text
 ordilabel(NMDS_beetle, display="species", select =which (include_beetle==TRUE & crawling_beetle == TRUE), cex=0.6, col="black", fill="white")
 ordilabel(NMDS_beetle, display="species", select =which (include_beetle==TRUE & flying_beetle == TRUE), cex=0.6, col="white", fill="black")
