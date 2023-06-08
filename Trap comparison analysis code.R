@@ -78,9 +78,9 @@ str(insects_order) #now trap is listed as a factor
 library (vegan)
 
 #Create matrix of environmental variables
-env.matrix_order<-insects_order[c(1:4,17)]
+env.matrix_order<-insects_order[c(1:4,18)]
 #create matrix of community variables
-com.matrix_order<-insects_order[c(5:16)]
+com.matrix_order<-insects_order[c(5:17)]
 
 #ordination by NMDS
 NMDS_order<-metaMDS(com.matrix_order, distance="bray", k=2, autotransform=FALSE, trymax=100)
@@ -118,7 +118,7 @@ ordilabel(NMDS_order, display="species", select =which (include_order==TRUE & cr
 ordilabel(NMDS_order, display="species", select =which (include_order==TRUE & flying_order == TRUE), cex=0.6, col="white", fill="black")
 
 #PERMANOVA -- testing for differences between the groups (traps)
-fit<-adonis(com.matrix_order ~ Trap, data = env.matrix_order, permutations = 999, method="bray")
+fit<-adonis2(com.matrix_order ~ Trap, data = env.matrix_order, permutations = 999, method="bray")
 fit
 #P-value = 0.001
 
@@ -135,6 +135,7 @@ library(pairwiseAdonis)
 citation("pairwiseAdonis")
 
 pairwise.adonis(com.matrix_order, env.matrix_order$Trap)
+#p-value 0.001 for all comparisons
 
 ################
 #calculate order Abundance
@@ -510,7 +511,7 @@ ordilabel(NMDS, display="species", select =which (include_func==TRUE & flying_fu
 ordilabel(NMDS, display="species", select =which (include_func==TRUE & intermediate_func == TRUE), cex=0.6, col="black", fill="gray")
 
 #bootstrapping and testing for differences between the groups (traps)
-fit<-adonis(com.matrix ~ Trap, data = env.matrix, permutations = 999, method="bray")
+fit<-adonis2(com.matrix ~ Trap, data = env.matrix, permutations = 999, method="bray")
 fit
 #P-value = 0.001
 
@@ -521,6 +522,7 @@ anova(betadisper(distances_data, env.matrix$Trap))
 #P-value = .0001 -- cannot assume homogeneity of multivariate dispersion
 
 pairwise.adonis(com.matrix, env.matrix$Trap)
+#p=0.001 for all comparisons
 
 
 ################
