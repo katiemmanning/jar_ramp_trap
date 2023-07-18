@@ -1148,7 +1148,7 @@ anova(betadisper(distances_data, env.matrix_beetle$Trap))
 #P-value = 0.7987 --- assumes homogeneity
 
 pairwise.adonis(com.matrix_beetle, env.matrix_beetle$Trap)
-#only jar and sticky sig diff (p=0.006)
+#only pitfall-sticky and jar-sticky sig diff 
 
 ################
 #calculate beetle Abundance
