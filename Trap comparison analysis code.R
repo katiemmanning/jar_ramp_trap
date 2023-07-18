@@ -83,10 +83,11 @@ env.matrix_order<-insects_order[c(1:4,18)]
 com.matrix_order<-insects_order[c(5:17)]
 
 #ordination by NMDS
-NMDS_order<-metaMDS(com.matrix_order, distance="bray", k=2, autotransform=FALSE, trymax=100)
+NMDS_order<-metaMDS(com.matrix_order, distance="bray", k=2, autotransform=TRUE, trymax=100)
 NMDS_order
 stressplot(NMDS_order)
-#stress=0.14
+#stress=0.21
+#best solution not repeated
 
 #order NMDS visualization 
 
@@ -150,6 +151,10 @@ insects_order$richness <- insects.rowsums_order
 diversity_order <-diversity(insects_order[,5:16])
 insects_order$diversity <-diversity_order
 
+#calculate order inverse Simpson diversity
+simpdiversity_order <-diversity(insects_order[,5:16], "invsimpson")
+insects_order$simpdiversity <-simpdiversity_order
+
 #calculate order Evenness
 evenness_order <-diversity_order/log(specnumber(insects_order[,5:16]))
 insects_order$evenness <- evenness_order
@@ -190,7 +195,7 @@ abun.emm_order
 abun.cld_order<-multcomp::cld(abun.emm_order, alpha = 0.05, Letters = LETTERS)
 abun.cld_order
 
-#order diversity
+#order Shannon diversity
 ##AIC 132
 #Date is not significant
 diversity.model_order<-lmer(diversity ~ Trap + Date + (1 | Site:Replicate), data=insects_order)
@@ -203,6 +208,20 @@ div.emm_order
 #results: no sig diff jar-pitfall (0.4395), jar-sticky (0.8075), pitfall-sticky (0.0859); sig between rest
 div.cld_order<-multcomp::cld(div.emm_order, alpha = 0.05, Letters = LETTERS)
 div.cld_order
+
+#order inverse Simpsons diversity
+##AIC 489
+#Date is not significant
+simpdiversity.model_order<-lmer(simpdiversity ~ Trap + Date + (1 | Site:Replicate), data=insects_order)
+summary(simpdiversity.model_order)
+Anova(simpdiversity.model_order)
+AIC(simpdiversity.model_order)
+#pairwise comparison 
+sdiv.emm_order<-emmeans(simpdiversity.model_order,pairwise~Trap)
+sdiv.emm_order
+#results: no sig diff jar-pitfall (0.94), jar-sticky (0.99), pitfall-sticky (0.89); sig between rest
+sdiv.cld_order<-multcomp::cld(sdiv.emm_order, alpha = 0.05, Letters = LETTERS)
+sdiv.cld_order
 
 #order evenness
 ##AIC -184
@@ -242,7 +261,7 @@ richness.plot_order<-ggplot(insects_order, aes(x =Trap, y = richness, fill=Trap)
   geom_text(data=rich.cld_order, aes(y = 25, label = .group))
 richness.plot_order
 
-#order diversity plot
+#order Shannon diversity plot
 diversity.plot_order<-ggplot(insects_order, aes(x =Trap, y = diversity, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
@@ -252,6 +271,17 @@ diversity.plot_order<-ggplot(insects_order, aes(x =Trap, y = diversity, fill=Tra
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
   geom_text(data=div.cld_order, aes(y = 2.5, label = .group))
 diversity.plot_order
+
+#order inv Simpson diversity plot
+simpdiversity.plot_order<-ggplot(insects_order, aes(x =Trap, y = simpdiversity, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(x="", y="Inverse Simpson Diversity")+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=sdiv.cld_order, aes(y = 6.5, label = .group))
+simpdiversity.plot_order
 
 #order evenness plot
 evenness.plot_order<-ggplot(insects_order, aes(x =Trap, y = evenness, fill=Trap))+
@@ -266,9 +296,9 @@ evenness.plot_order
 
 #Mush order plots together
 library(ggpubr) 
-orderfigure <- ggarrange(richness.plot_order, abundance.plot_order, diversity.plot_order, evenness.plot_order,
-                    labels = c("A", "B", "C", "D"),
-                    ncol = 2, nrow = 2,
+orderfigure <- ggarrange(richness.plot_order, abundance.plot_order, diversity.plot_order, simpdiversity.plot_order, evenness.plot_order,
+                    labels = c("A", "B", "C", "D", "E"),
+                    ncol = 3, nrow = 3,
                     common.legend = TRUE, legend = "bottom")
 pdf("order.pdf", height=6, width=8) #height and width in inches
 orderfigure
@@ -473,10 +503,11 @@ env.matrix<-insects[c(1:4,44)]
 com.matrix<-insects[c(5:43)]
 
 #ordination by NMDS
-NMDS<-metaMDS(com.matrix, distance="bray", k=2, autotransform=FALSE, trymax=100)
+NMDS<-metaMDS(com.matrix, distance="bray", k=2, autotransform=TRUE, trymax=100)
 NMDS
 stressplot(NMDS)
-#stress=0.15
+#stress=0.21
+#best solution was not repeated
 
 #functional classification NMDS visualization 
 
@@ -538,6 +569,10 @@ insects$richness <- insects.rowsums
 diversity <-diversity(insects[,5:43])
 insects$diversity <-diversity
 
+#calculate inverse Simpson diversity
+simpdiversity <-diversity(insects[,5:43], "invsimpson")
+insects$simpdiversity <-simpdiversity
+
 #calculate Evenness
 evenness <-diversity/log(specnumber(insects[,5:43]))
 insects$evenness <- evenness
@@ -576,10 +611,10 @@ abun.emm
 abun.cld<-multcomp::cld(abun.emm, alpha = 0.05, Letters = LETTERS)
 abun.cld
 
-#diversity
-##AIC 157
+#Shannon diversity
+##AIC 178
 #date is not significant
-diversity.model<-lmer(diversity ~ Trap + (1 | Site:Replicate), data=insects)
+diversity.model<-lmer(diversity ~ Trap + Date + (1 | Site:Replicate), data=insects)
 summary(diversity.model)
 Anova(diversity.model) 
 AIC(diversity.model)
@@ -590,16 +625,29 @@ div.emm
 div.cld<-multcomp::cld(div.emm, alpha = 0.05, Letters = LETTERS)
 div.cld
 
+#inv Simpson diversity
+##AIC 576
+simpdiversity.model<-lmer(simpdiversity ~ Trap + +Date + (1 | Site:Replicate), data=insects)
+summary(simpdiversity.model)
+Anova(simpdiversity.model) 
+AIC(simpdiversity.model)
+#pairwise comparison 
+sdiv.emm<-emmeans(simpdiversity.model,pairwise~Trap)
+sdiv.emm
+#results: no sig diff btw jar-pitfall (0.76), jar-sticky (0.64), pitfall-sticky (0.99); sig diff btw all others 
+sdiv.cld<-multcomp::cld(sdiv.emm, alpha = 0.05, Letters = LETTERS)
+sdiv.cld
+
 #evenness
-##AIC -189
-evenness.model<-lmer(evenness ~ Trap + (1 | Site:Replicate), data=insects)
+##AIC -169
+evenness.model<-lmer(evenness ~ Trap + Date + (1 | Site:Replicate), data=insects)
 summary(evenness.model)
 Anova(evenness.model)
 AIC(evenness.model)
 #pairwise comparison 
 even.emm<-emmeans(evenness.model,pairwise~Trap)
 even.emm
-#results: no sig diff btw jar-pitfall (0.3834) or ramp-sticky (0.1227); sig diff btw all others
+#results: no sig diff btw jar-pitfall (0.28) or ramp-sticky (0.09); sig diff btw all others
 even.cld<-multcomp::cld(even.emm, alpha = 0.05, Letters = LETTERS)
 even.cld
 
@@ -628,7 +676,7 @@ richness.plot<-ggplot(insects, aes(x =Trap, y = richness, fill=Trap))+
   geom_text(data=rich.cld, aes(y = 25, label = .group))
 richness.plot
 
-#diversity plot
+#Shannon diversity plot
 diversity.plot<-ggplot(insects, aes(x =Trap, y = diversity, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
@@ -638,6 +686,17 @@ diversity.plot<-ggplot(insects, aes(x =Trap, y = diversity, fill=Trap))+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
   geom_text(data=div.cld, aes(y = 2.5, label = .group))
 diversity.plot
+
+#Inv Simpson diversity plot
+simpdiversity.plot<-ggplot(insects, aes(x =Trap, y = simpdiversity, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(x="", y="")+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=sdiv.cld, aes(y = 7.4, label = .group))
+simpdiversity.plot
 
 #evenness plot
 evenness.plot<-ggplot(insects, aes(x =Trap, y = evenness, fill=Trap))+
@@ -652,9 +711,9 @@ evenness.plot
 
 #Mush order plots together
 library(ggpubr) 
-functionalfigure <- ggarrange(richness.plot, abundance.plot, diversity.plot, evenness.plot,
-                         labels = c("E", "F", "G", "H"),
-                         ncol = 2, nrow = 2,
+functionalfigure <- ggarrange(richness.plot, abundance.plot, diversity.plot, simpdiversity.plot, evenness.plot,
+                         labels = c("E", "F", "G", "H", "I"),
+                         ncol = 3, nrow = 2,
                          common.legend = TRUE, legend = "bottom")
 pdf("functional.pdf", height=6, width=8) #height and width in inches
 functionalfigure
@@ -1078,9 +1137,9 @@ ordilabel(NMDS_beetle, display="species", select =which (include_beetle==TRUE & 
 ordilabel(NMDS_beetle, display="species", select =which (include_beetle==TRUE & intermediate_beetle == TRUE), cex=0.6, col="black", fill="grey")
 
 #bootstrapping and testing for differences between the groups (traps)
-fit<-adonis(com.matrix_beetle ~ Trap, data = env.matrix_beetle, permutations = 999, method="bray")
+fit<-adonis2(com.matrix_beetle ~ Trap, data = env.matrix_beetle, permutations = 999, method="bray")
 fit
-#P-value = 0.003
+#P-value = 0.006 - 0.001
 
 #check assumption of homogeneity of multivariate dispersion 
 #P-value greater than 0.05 means assumption has been met
@@ -1089,6 +1148,7 @@ anova(betadisper(distances_data, env.matrix_beetle$Trap))
 #P-value = 0.7987 --- assumes homogeneity
 
 pairwise.adonis(com.matrix_beetle, env.matrix_beetle$Trap)
+#only jar and sticky sig diff (p=0.006)
 
 ################
 #calculate beetle Abundance
@@ -1103,6 +1163,10 @@ beetle$richness <- insects.rowsums_beetle
 diversity_beetle <-diversity(beetle[,4:18])
 beetle$diversity <-diversity_beetle
 
+#calculate beetle inverse Simpson diversity
+simpdiversity_beetle <-diversity(beetle[,4:18], "invsimpson")
+beetle$simpdiversity <-simpdiversity_beetle
+
 #calculate beetle Evenness
 evenness_beetle <-diversity_beetle/log(specnumber(beetle[,4:18]))
 beetle$evenness <- evenness_beetle
@@ -1115,7 +1179,7 @@ library (emmeans) #for pairwise comparisons
 library (multcompView) #to view letters
 
 #beetle richness
-##AIC 77 (69 w/o date)
+##AIC 77 
 richness.model_beetle<-lmer(richness ~ Trap + Date + (1 | Site), data=beetle)
 summary(richness.model_beetle)
 Anova(richness.model_beetle)
@@ -1128,7 +1192,7 @@ rich.cld_beetle<-multcomp::cld(rich.emm_beetle, alpha = 0.05, Letters = LETTERS)
 rich.cld_beetle
 
 #beetle abundance
-##AIC 77 (69 w/o date)
+##AIC 77 
 abundance.model_beetle<-lmer(abundance ~ Trap + Date + (1 | Site), data=beetle)
 summary(abundance.model_beetle)
 Anova(abundance.model_beetle)
@@ -1140,8 +1204,8 @@ abun.emm_beetle
 abun.cld_beetle<-multcomp::cld(abun.emm_beetle, alpha = 0.05, Letters = LETTERS)
 abun.cld_beetle
 
-#beetle diversity
-##AIC 53 (40 w/o date)
+#beetle Shannon diversity
+##AIC 54
 diversity.model_beetle<-lmer(diversity ~ Trap + Date + (1 | Site), data=beetle)
 summary(diversity.model_beetle)
 Anova(diversity.model_beetle)
@@ -1153,8 +1217,21 @@ div.emm_beetle
 div.cld_beetle<-multcomp::cld(div.emm_beetle, alpha = 0.05, Letters = LETTERS)
 div.cld_beetle
 
+#beetle inv simpson diversity
+##AIC 77
+simpdiversity.model_beetle<-lmer(simpdiversity ~ Trap + Date + (1 | Site), data=beetle)
+summary(simpdiversity.model_beetle)
+Anova(simpdiversity.model_beetle)
+AIC(simpdiversity.model_beetle)
+#pairwise comparison 
+sdiv.emm_beetle<-emmeans(simpdiversity.model_beetle,pairwise~Trap)
+sdiv.emm_beetle
+#results: no differences
+sdiv.cld_beetle<-multcomp::cld(sdiv.emm_beetle, alpha = 0.05, Letters = LETTERS)
+sdiv.cld_beetle
+
 #beetle evenness
-##AIC -193 (-411 w/o date)
+##AIC -193 
 evenness.model_beetle<-lmer(evenness ~ Trap + Date + (1 | Site), data=beetle)
 summary(evenness.model_beetle)
 Anova(evenness.model_beetle)
@@ -1190,7 +1267,7 @@ richness.plot_beetle<-ggplot(beetle, aes(x =Trap, y = richness, fill=Trap))+
   geom_text(data=rich.cld_beetle, aes(y = 5, label = .group))
 richness.plot_beetle
 
-#beetle diversity plot
+#beetle Shannon siversity plot
 diversity.plot_beetle<-ggplot(beetle, aes(x =Trap, y = diversity, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
@@ -1200,6 +1277,17 @@ diversity.plot_beetle<-ggplot(beetle, aes(x =Trap, y = diversity, fill=Trap))+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
   geom_text(data=div.cld_beetle, aes(y = 2.5, label = .group))
 diversity.plot_beetle
+
+#beetle inv Simpson diversity plot
+simpdiversity.plot_beetle<-ggplot(beetle, aes(x =Trap, y = simpdiversity, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(x="", y="")+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=sdiv.cld_beetle, aes(y = 3, label = .group))
+simpdiversity.plot_beetle
 
 #beetle evenness plot
 evenness.plot_beetle<-ggplot(beetle, aes(x =Trap, y = evenness, fill=Trap))+
@@ -1214,9 +1302,9 @@ evenness.plot_beetle
 
 #Mush order plots together
 library(ggpubr) 
-beetlefigure <- ggarrange(richness.plot_beetle, abundance.plot_beetle, diversity.plot_beetle, evenness.plot_beetle,
-                         labels = c("A", "B", "C", "D"),
-                         ncol = 2, nrow = 2,
+beetlefigure <- ggarrange(richness.plot_beetle, abundance.plot_beetle, diversity.plot_beetle, simpdiversity.plot_beetle, evenness.plot_beetle,
+                         labels = c("A", "B", "C", "D", "E"),
+                         ncol = 3, nrow = 2,
                          common.legend = TRUE, legend = "bottom")
 pdf("beetle.pdf", height=6, width=8) #height and width in inches
 beetlefigure
@@ -1968,18 +2056,18 @@ dev.off()
 #Figure 4 - trap comparison box plots
 #a - order
 library(ggpubr) 
-orderfigure <- ggarrange(richness.plot_order, abundance.plot_order, diversity.plot_order, evenness.plot_order,
-                         ncol = 4, nrow = 1)
+orderfigure <- ggarrange(richness.plot_order, abundance.plot_order, diversity.plot_order, simpdiversity.plot_order, evenness.plot_order,
+                         ncol = 5, nrow = 1)
 orderfigure
 
 #b - functional 
-functionalfigure <- ggarrange(richness.plot, abundance.plot, diversity.plot, evenness.plot,
-                              ncol = 4, nrow = 1)
+functionalfigure <- ggarrange(richness.plot, abundance.plot, diversity.plot, simpdiversity.plot, evenness.plot,
+                              ncol = 5, nrow = 1)
 functionalfigure
 
 #c - beetle
-beetlefigure <- ggarrange(richness.plot_beetle, abundance.plot_beetle, diversity.plot_beetle, evenness.plot_beetle,
-                          ncol = 4, nrow = 1,
+beetlefigure <- ggarrange(richness.plot_beetle, abundance.plot_beetle, diversity.plot_beetle, simpdiversity.plot_beetle, evenness.plot_beetle,
+                          ncol = 5, nrow = 1,
                           common.legend = TRUE, legend = "bottom")
 beetlefigure
 
