@@ -725,8 +725,6 @@ functionalfigure
 #flying vs crawling
 #input data
 
-#FILES NEED EDITING TO ADD SITE, REPLICATE, and DATE
-
 flying<-read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/flying.csv")
 crawling<-read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/crawling.csv")
 intermediate<-read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/intermediate.csv")
@@ -743,6 +741,7 @@ str(intermediate) #trap is listed as character
 intermediate$Trap <- as.factor(intermediate$Trap)
 str(intermediate) #now trap is listed as a factor
 
+#Abundance
 #calculating abundance for flying
 flying.abun <- rowSums(flying[,2:23])
 flying$abundance <- flying.abun
@@ -764,6 +763,7 @@ intermediate$abundance <- intermediate.abun
 mean(intermediate$abundance) #20.53
 sd(intermediate$abundance)/sqrt(10) #15.94
 
+#richness
 #calculating richness for flying
 flying.rich <- rowSums(flying[,2:23]>0)
 flying$richness <- flying.rich
@@ -785,6 +785,77 @@ intermediate$richness <- intermediate.rich
 mean(intermediate$richness) #1.68
 sd(intermediate$richness)/sqrt(10) #0.32
 
+#Shannon diversity
+#calculating shannon diversity for flying
+flying.div <- diversity(flying[,2:23])
+flying$diversity <- flying.div
+
+mean(flying$diversity) 
+sd(flying$diversity)/sqrt(10) 
+
+#calculating shannon diversity for crawling
+crawling.div <- diversity(crawling[,2:6])
+crawling$diversity <- crawling.div
+
+mean(crawling$diversity)
+sd(crawling$diversity)/sqrt(10)
+
+#calculating shannon diversity for intermediate
+intermediate.div <- diversity(intermediate[,2:11])
+intermediate$diversity <- intermediate.div
+
+mean(intermediate$diversity) 
+sd(intermediate$diversity)/sqrt(10)
+
+
+#inverse simpson diversity
+#calculating inv simp diversity for flying
+flying.simpdiv <- diversity(flying[,2:23], "invsimpson")
+flying$simpdiversity <- flying.simpdiv
+
+mean(flying$simpdiversity) 
+sd(flying$simpdiversity)/sqrt(10) 
+
+#calculating inv simp diversity for crawling
+crawling.simpdiv <- diversity(crawling[,2:6], "invsimpson")
+crawling$simpdiversity <- crawling.simpdiv
+
+mean(crawling$simpdiversity)
+sd(crawling$simpdiversity)/sqrt(10)
+
+#calculating inv simp diversity for intermediate
+intermediate.simpdiv <- diversity(intermediate[,2:11], "invsimpson")
+intermediate$simpdiversity <- intermediate.simpdiv
+
+mean(intermediate$simpdiversity) 
+sd(intermediate$simpdiversity)/sqrt(10)
+
+
+#Evenness
+#calculating evenness for flying
+flying.even <- diversity/log(specnumber(flying[,2:23]))
+flying$evenness <- flying.even
+
+mean(flying$evenness) 
+sd(flying$evenness)/sqrt(10) 
+
+#calculating Evenness for crawling
+crawling.even <- diversity/log(specnumber(crawling[,2:6]))
+crawling$evenness <- crawling.even
+
+mean(crawling$evenness)
+sd(crawling$evenness)/sqrt(10)
+
+#calculating evenness for intermediate
+intermediate.even <- diversity/log(specnumber(intermediate[,2:11]))
+intermediate$evenness <- intermediate.even
+
+mean(intermediate$evenness) 
+sd(intermediate$evenness)/sqrt(10)
+
+##ADD OTHER VARIABLES##
+
+#Abundance
 #abundance model for flying arthropods
 #AIC = 1260
 abundance.model_flying<-lmer(abundance ~ Trap + Date + (Site:Replicate), data=flying,family = negative.binomial(2.5))
@@ -824,6 +895,7 @@ abun_i.emm
 abun_i.cld<-multcomp::cld(abun_i.emm, alpha = 0.05, Letters = LETTERS)
 abun_i.cld
 
+#Richness
 #richness model for flying arthropods
 #AIC = 591
 richness.model_flying<-lmer(richness ~ Trap + Date + (Site:Replicate), data=flying)
