@@ -743,148 +743,149 @@ str(intermediate) #now trap is listed as a factor
 
 #Abundance
 #calculating abundance for flying
-flying.abun <- rowSums(flying[,2:23])
+flying.abun <- rowSums(flying[,6:27])
 flying$abundance <- flying.abun
 
 mean(flying$abundance) #43.18
 sd(flying$abundance)/sqrt(10) #16.32
 
 #calculating abundance for crawling
-crawling.abun <- rowSums(crawling[,2:6])
+crawling.abun <- rowSums(crawling[,6:10])
 crawling$abundance <- crawling.abun
 
 mean(crawling$abundance) #18.4
 sd(crawling$abundance)/sqrt(10) #8.14
 
 #calculating abundance for intermediate
-intermediate.abun <- rowSums(intermediate[,2:11])
+intermediate.abun <- rowSums(intermediate[,6:15])
 intermediate$abundance <- intermediate.abun
 
 mean(intermediate$abundance) #20.53
 sd(intermediate$abundance)/sqrt(10) #15.94
 
+
 #richness
 #calculating richness for flying
-flying.rich <- rowSums(flying[,2:23]>0)
+flying.rich <- rowSums(flying[,6:27]>0)
 flying$richness <- flying.rich
 
 mean(flying$richness) #3.88
 sd(flying$richness)/sqrt(10) #0.85
 
 #calculating richness for crawling
-crawling.rich <- rowSums(crawling[,2:6]>0)
+crawling.rich <- rowSums(crawling[,6:10]>0)
 crawling$richness <- crawling.rich
 
 mean(crawling$richness) #2.65
 sd(crawling$richness)/sqrt(10) #0.51
 
 #calculating richness for intermediate
-intermediate.rich <- rowSums(intermediate[,2:11]>0)
+intermediate.rich <- rowSums(intermediate[,6:15]>0)
 intermediate$richness <- intermediate.rich
 
 mean(intermediate$richness) #1.68
 sd(intermediate$richness)/sqrt(10) #0.32
 
+
 #Shannon diversity
 #calculating shannon diversity for flying
-flying.div <- diversity(flying[,2:23])
+flying.div <- diversity(flying[,6:27])
 flying$diversity <- flying.div
 
-mean(flying$diversity) 
-sd(flying$diversity)/sqrt(10) 
+mean(flying$diversity) #0.77
+sd(flying$diversity)/sqrt(10) #0.16
 
 #calculating shannon diversity for crawling
-crawling.div <- diversity(crawling[,2:6])
+crawling.div <- diversity(crawling[,6:10])
 crawling$diversity <- crawling.div
 
-mean(crawling$diversity)
-sd(crawling$diversity)/sqrt(10)
+mean(crawling$diversity) #0.69
+sd(crawling$diversity)/sqrt(10) #0.16
 
 #calculating shannon diversity for intermediate
-intermediate.div <- diversity(intermediate[,2:11])
+intermediate.div <- diversity(intermediate[,6:15])
 intermediate$diversity <- intermediate.div
 
-mean(intermediate$diversity) 
-sd(intermediate$diversity)/sqrt(10)
+mean(intermediate$diversity) #0.32
+sd(intermediate$diversity)/sqrt(10) #0.11
 
 
 #inverse simpson diversity
 #calculating inv simp diversity for flying
-flying.simpdiv <- diversity(flying[,2:23], "invsimpson")
+flying.simpdiv <- diversity(flying[,6:27], "invsimpson")
 flying$simpdiversity <- flying.simpdiv
 
-mean(flying$simpdiversity) 
+mean(flying$simpdiversity) #inf
 sd(flying$simpdiversity)/sqrt(10) 
 
 #calculating inv simp diversity for crawling
-crawling.simpdiv <- diversity(crawling[,2:6], "invsimpson")
+crawling.simpdiv <- diversity(crawling[,6:10], "invsimpson")
 crawling$simpdiversity <- crawling.simpdiv
 
-mean(crawling$simpdiversity)
+mean(crawling$simpdiversity) #inf
 sd(crawling$simpdiversity)/sqrt(10)
 
 #calculating inv simp diversity for intermediate
-intermediate.simpdiv <- diversity(intermediate[,2:11], "invsimpson")
+intermediate.simpdiv <- diversity(intermediate[,6:15], "invsimpson")
 intermediate$simpdiversity <- intermediate.simpdiv
 
-mean(intermediate$simpdiversity) 
+mean(intermediate$simpdiversity) #inf
 sd(intermediate$simpdiversity)/sqrt(10)
 
 
 #Evenness
 #calculating evenness for flying
-flying.even <- diversity/log(specnumber(flying[,2:23]))
+flying.even <- flying$diversity/log(specnumber(flying[,6:27]))
 flying$evenness <- flying.even
 
-mean(flying$evenness) 
+mean(flying$evenness) #Na
 sd(flying$evenness)/sqrt(10) 
 
 #calculating Evenness for crawling
-crawling.even <- diversity/log(specnumber(crawling[,2:6]))
+crawling.even <- crawling$diversity/log(specnumber(crawling[,6:10]))
 crawling$evenness <- crawling.even
 
-mean(crawling$evenness)
+mean(crawling$evenness) #Na
 sd(crawling$evenness)/sqrt(10)
 
 #calculating evenness for intermediate
-intermediate.even <- diversity/log(specnumber(intermediate[,2:11]))
+intermediate.even <- intermediate$diversity/log(specnumber(intermediate[,6:15]))
 intermediate$evenness <- intermediate.even
 
-mean(intermediate$evenness) 
+mean(intermediate$evenness) #Na
 sd(intermediate$evenness)/sqrt(10)
 
-##ADD OTHER VARIABLES##
 
 #Abundance
 #abundance model for flying arthropods
-#AIC = 1260
-abundance.model_flying<-lmer(abundance ~ Trap + Date + (Site:Replicate), data=flying,family = negative.binomial(2.5))
+#AIC = 1219
+abundance.model_flying<-glmer(abundance ~ Trap + Date + (1|Site:Replicate), data=flying,family = negative.binomial(2.5))
 summary(abundance.model_flying)
 Anova(abundance.model_flying)
 AIC(abundance.model_flying)
 #pairwise comparison
 abun_f.emm<-emmeans(abundance.model_flying,pairwise~Trap)
 abun_f.emm
-#results: no diff btw ramp-sticky
+#results: no diff btw ramp-sticky, diff between all else
 abun_f.cld<-multcomp::cld(abun_f.emm, alpha = 0.05, Letters = LETTERS)
 abun_f.cld
 
 #abundance model for crawling arthropods
-#AIC = 1073
-abundance.model_crawling<-lmer(abundance ~ Trap + Date + (Site:Replicate), data=crawling,family = negative.binomial(2))
+#AIC = 1053
+abundance.model_crawling<-glmer(abundance ~ Trap + Date + (1|Site:Replicate), data=crawling,family = negative.binomial(2))
 summary(abundance.model_crawling)
 Anova(abundance.model_crawling)
 AIC(abundance.model_crawling)
 #pairwise comparison
 abun_c.emm<-emmeans(abundance.model_crawling,pairwise~Trap)
 abun_c.emm
-#results: no diff btw jar-pitfall 
+#results: no diff btw jar-pitfall, diff between all else
 abun_c.cld<-multcomp::cld(abun_c.emm, alpha = 0.05, Letters = LETTERS)
 abun_c.cld
 
 #abundance model for intermediate arthropods
-#AIC = 1118
-abundance.model_intermediate<-lmer(abundance ~ Trap + Date + (Site:Replicate), data=intermediate, family = negative.binomial(0.9))
+#AIC = 1065
+abundance.model_intermediate<-glmer(abundance ~ Trap + Date + (1|Site:Replicate), data=intermediate, family = negative.binomial(0.9))
 summary(abundance.model_intermediate)
 Anova(abundance.model_intermediate)
 AIC(abundance.model_intermediate)
@@ -895,10 +896,11 @@ abun_i.emm
 abun_i.cld<-multcomp::cld(abun_i.emm, alpha = 0.05, Letters = LETTERS)
 abun_i.cld
 
+
 #Richness
 #richness model for flying arthropods
-#AIC = 591
-richness.model_flying<-lmer(richness ~ Trap + Date + (Site:Replicate), data=flying)
+#AIC = 587
+richness.model_flying<-lmer(richness ~ Trap + Date + (1|Site:Replicate), data=flying)
 summary(richness.model_flying)
 Anova(richness.model_flying)
 AIC(richness.model_flying)
@@ -910,30 +912,155 @@ rich_f.cld<-multcomp::cld(rich_f.emm, alpha = 0.05, Letters = LETTERS)
 rich_f.cld
 
 #richness model for crawling arthropods
-#AIC = 447
-richness.model_crawling<-lmer(richness ~ Trap + Date + (Site:Replicate), data=crawling)
+#AIC = 453
+richness.model_crawling<-lmer(richness ~ Trap + Date + (1|Site:Replicate), data=crawling)
 summary(richness.model_crawling)
 Anova(richness.model_crawling)
 AIC(richness.model_crawling)
 #pairwise comparison
 rich_c.emm<-emmeans(richness.model_crawling,pairwise~Trap)
 rich_c.emm
-#results: no diff btw jar-pitfall
+#results: no diff btw jar-pitfall, diff between all else
 rich_c.cld<-multcomp::cld(rich_c.emm, alpha = 0.05, Letters = LETTERS)
 rich_c.cld
 
 #richness model for intermediate arthropods
-#AIC = 438
-richness.model_intermediate<-lmer(richness ~ Trap + Date + (Site:Replicate), data=intermediate)
+#AIC = 436
+richness.model_intermediate<-lmer(richness ~ Trap + Date + (1|Site:Replicate), data=intermediate)
 summary(richness.model_intermediate)
 Anova(richness.model_intermediate)
 AIC(richness.model_intermediate)
 #pairwise comparison
 rich_i.emm<-emmeans(richness.model_intermediate,pairwise~Trap)
 rich_i.emm
-#results: no diff btw jar-pitfall or jar-sticky
+#results: no diff btw jar-pitfall, diff between all else
 rich_i.cld<-multcomp::cld(rich_i.emm, alpha = 0.05, Letters = LETTERS)
 rich_i.cld
+
+
+#Shannon diversity 
+#shan div model for flying arthropods
+#AIC = 116
+diversity.model_flying<-lmer(diversity ~ Trap + Date + (1|Site:Replicate), data=flying)
+summary(diversity.model_flying)
+Anova(diversity.model_flying)
+AIC(diversity.model_flying)
+#pairwise comparison
+div_f.emm<-emmeans(diversity.model_flying,pairwise~Trap)
+div_f.emm
+#results: no diff btw ramp and sticky, diff btw all else
+div_f.cld<-multcomp::cld(div_f.emm, alpha = 0.05, Letters = LETTERS)
+div_f.cld
+
+#shan div model for crawling arthropods
+#AIC = 141
+diversity.model_crawling<-lmer(diversity ~ Trap + Date + (1|Site:Replicate), data=crawling)
+summary(diversity.model_crawling)
+Anova(diversity.model_crawling)
+AIC(diversity.model_crawling)
+#pairwise comparison
+div_c.emm<-emmeans(diversity.model_crawling,pairwise~Trap)
+div_c.emm
+#results: no diff btw jar and pitfall, diff btw all else
+div_c.cld<-multcomp::cld(div_c.emm, alpha = 0.05, Letters = LETTERS)
+div_c.cld
+
+#shan div model for intermediate arthropods
+#AIC = 142
+diversity.model_intermediate<-lmer(diversity ~ Trap + Date + (1|Site:Replicate), data=intermediate)
+summary(diversity.model_intermediate)
+Anova(diversity.model_intermediate)
+AIC(diversity.model_intermediate)
+#pairwise comparison
+div_i.emm<-emmeans(diversity.model_intermediate,pairwise~Trap)
+div_i.emm
+#results: similar btw all except diff btw jar and sticky and pitfall and sticky
+div_i.cld<-multcomp::cld(div_i.emm, alpha = 0.05, Letters = LETTERS)
+div_i.cld
+
+#DOESN'T WORK
+#Inverse Simpson diversity 
+#inv simp div model for flying arthropods
+#AIC = 116
+simpdiversity.model_flying<-lmer(simpdiversity ~ Trap + Date + (1|Site:Replicate), data=flying)
+summary(simpdiversity.model_flying)
+Anova(simpdiversity.model_flying)
+AIC(simpdiversity.model_flying)
+#pairwise comparison
+sdiv_f.emm<-emmeans(simpdiversity.model_flying,pairwise~Trap)
+sdiv_f.emm
+#results: no diff btw ramp and sticky, diff btw all else
+sdiv_f.cld<-multcomp::cld(sdiv_f.emm, alpha = 0.05, Letters = LETTERS)
+sdiv_f.cld
+
+#inv simp div model for crawling arthropods
+#AIC = 141
+simpdiversity.model_crawling<-lmer(simpdiversity ~ Trap + Date + (1|Site:Replicate), data=crawling)
+summary(simpdiversity.model_crawling)
+Anova(simpdiversity.model_crawling)
+AIC(simpdiversity.model_crawling)
+#pairwise comparison
+sdiv_c.emm<-emmeans(simpdiversity.model_crawling,pairwise~Trap)
+sdiv_c.emm
+#results: no diff btw jar and pitfall, diff btw all else
+sdiv_c.cld<-multcomp::cld(sdiv_c.emm, alpha = 0.05, Letters = LETTERS)
+sdiv_c.cld
+
+#inv simp div model for intermediate arthropods
+#AIC = 142
+simpdiversity.model_intermediate<-lmer(simpdiversity ~ Trap + Date + (1|Site:Replicate), data=intermediate)
+summary(simpdiversity.model_intermediate)
+Anova(simpdiversity.model_intermediate)
+AIC(simpdiversity.model_intermediate)
+#pairwise comparison
+sdiv_i.emm<-emmeans(simpdiversity.model_intermediate,pairwise~Trap)
+sdiv_i.emm
+#results: similar btw all except diff btw jar and sticky and pitfall and sticky
+sdiv_i.cld<-multcomp::cld(sdiv_i.emm, alpha = 0.05, Letters = LETTERS)
+sdiv_i.cld
+
+
+#Evenness
+#evenness model for flying arthropods
+#AIC = 38
+evenness.model_flying<-lmer(evenness ~ Trap + Date + (1|Site:Replicate), data=flying)
+summary(evenness.model_flying)
+Anova(evenness.model_flying)
+AIC(evenness.model_flying)
+#pairwise comparison
+even_f.emm<-emmeans(evenness.model_flying,pairwise~Trap)
+even_f.emm
+#results: diff btw jar and pitfall, no diff btw all else -- pitfall more even
+even_f.cld<-multcomp::cld(even_f.emm, alpha = 0.05, Letters = LETTERS)
+even_f.cld
+
+#evenness model for crawling arthropods
+#AIC = 36
+evenness.model_crawling<-lmer(evenness ~ Trap + Date + (1|Site:Replicate), data=crawling)
+summary(evenness.model_crawling)
+Anova(evenness.model_crawling)
+AIC(evenness.model_crawling)
+#pairwise comparison
+even_c.emm<-emmeans(evenness.model_crawling,pairwise~Trap)
+even_c.emm
+#results: sticky diff than all other traps (lower), no diff btw anything else 
+even_c.cld<-multcomp::cld(even_c.emm, alpha = 0.05, Letters = LETTERS)
+even_c.cld
+
+#evenness model for intermediate arthropods
+#AIC = 129
+evenness.model_intermediate<-lmer(evenness ~ Trap + Date + (1|Site:Replicate), data=intermediate)
+summary(evenness.model_intermediate)
+Anova(evenness.model_intermediate)
+AIC(evenness.model_intermediate)
+#pairwise comparison
+even_i.emm<-emmeans(evenness.model_intermediate,pairwise~Trap)
+even_i.emm
+#results: same for all
+even_i.cld<-multcomp::cld(even_i.emm, alpha = 0.05, Letters = LETTERS)
+even_i.cld
+
+###
 
 ##plot flying abundance
 abundance.plot_flying<-ggplot(flying, aes(x =Trap, y = abundance, fill=Trap))+
@@ -1010,13 +1137,125 @@ richness.plot_intermediate<-ggplot(intermediate, aes(x =Trap, y = richness, fill
   geom_text(data=rich_i.cld, aes(y = 15, label = .group))
 richness.plot_intermediate
 
+##plot flying shannon diversity
+diversity.plot_flying<-ggplot(flying, aes(x =Trap, y = diversity, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(title="", x="", y="Shannon Diversity")+
+  theme (plot.title = element_text(hjust=0.5))+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=div_f.cld, aes(y = 2, label = .group))
+diversity.plot_flying
+
+##plot crawling shannon diversity
+diversity.plot_crawling<-ggplot(crawling, aes(x =Trap, y = diversity, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(title="", x="", y="")+
+  theme (plot.title = element_text(hjust=0.5))+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=div_c.cld, aes(y = 2, label = .group))
+diversity.plot_crawling
+
+##plot intermediate shannon diversity
+diversity.plot_intermediate<-ggplot(intermediate, aes(x =Trap, y = diversity, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(title="", x="", y="")+
+  theme (plot.title = element_text(hjust=0.5))+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=div_i.cld, aes(y = 2, label = .group))
+diversity.plot_intermediate
+
+#INV SIMPSON DOESN'T WORK YET
+##plot flying inv simpson diversity
+simpdiversity.plot_flying<-ggplot(flying, aes(x =Trap, y = simpdiversity, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(title="", x="", y="Inverse Simpson Diversity")+
+  theme (plot.title = element_text(hjust=0.5))+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=sdiv_f.cld, aes(y = 2, label = .group))
+simpdiversity.plot_flying
+
+##plot crawling inv simpson diversity
+simpdiversity.plot_crawling<-ggplot(crawling, aes(x =Trap, y = simpdiversity, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(title="", x="", y="")+
+  theme (plot.title = element_text(hjust=0.5))+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=sdiv_c.cld, aes(y = 2, label = .group))
+simpdiversity.plot_crawling
+
+##plot intermediate inv simpson diversity
+simpdiversity.plot_intermediate<-ggplot(intermediate, aes(x =Trap, y = simpdiversity, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(title="", x="", y="")+
+  theme (plot.title = element_text(hjust=0.5))+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=sdiv_i.cld, aes(y = 2, label = .group))
+simpdiversity.plot_intermediate
+
+##plot flying evenness
+evenness.plot_flying<-ggplot(flying, aes(x =Trap, y = evenness, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(title="", x="", y="Evenness")+
+  theme (plot.title = element_text(hjust=0.5))+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=even_f.cld, aes(y = 1.5, label = .group))
+evenness.plot_flying
+
+##plot crawling shannon diversity
+evenness.plot_crawling<-ggplot(crawling, aes(x =Trap, y = evenness, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(title="", x="", y="")+
+  theme (plot.title = element_text(hjust=0.5))+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=even_c.cld, aes(y = 1.5, label = .group))
+evenness.plot_crawling
+
+##plot intermediate shannon diversity
+evenness.plot_intermediate<-ggplot(intermediate, aes(x =Trap, y = evenness, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(title="", x="", y="")+
+  theme (plot.title = element_text(hjust=0.5))+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=even_i.cld, aes(y = 1.5, label = .group))
+evenness.plot_intermediate
+
+
 #mush together
 mobility <- ggarrange(abundance.plot_flying,abundance.plot_crawling,abundance.plot_intermediate,richness.plot_flying,richness.plot_crawling,richness.plot_intermediate,
-                     labels = c("A", "B", "C", "D", "E", "F"),
-                     ncol = 3, nrow = 2,
+                      diversity.plot_flying,diversity.plot_crawling,diversity.plot_intermediate,
+                      evenness.plot_flying,evenness.plot_crawling,evenness.plot_intermediate,
+                     #labels = c("A", "B", "C", "D", "E", "F"),
+                     ncol = 3, nrow = 4,
                      common.legend = TRUE, legend = "bottom")
 mobility
-pdf("mobility_box plot.pdf", height=6, width=8) #height and width in inches
+pdf("mobility_box plot.pdf", height=9, width=8) #height and width in inches
 mobility
 dev.off()
 
