@@ -724,6 +724,9 @@ functionalfigure
 
 #flying vs crawling
 #input data
+
+#FILES NEED EDITING TO ADD SITE, REPLICATE, and DATE
+
 flying<-read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/flying.csv")
 crawling<-read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/crawling.csv")
 intermediate<-read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/intermediate.csv")
@@ -784,7 +787,7 @@ sd(intermediate$richness)/sqrt(10) #0.32
 
 #abundance model for flying arthropods
 #AIC = 1260
-abundance.model_flying<-glm(abundance ~ Trap, data=flying,family = negative.binomial(2.5))
+abundance.model_flying<-lmer(abundance ~ Trap + Date + (Site:Replicate), data=flying,family = negative.binomial(2.5))
 summary(abundance.model_flying)
 Anova(abundance.model_flying)
 AIC(abundance.model_flying)
@@ -797,7 +800,7 @@ abun_f.cld
 
 #abundance model for crawling arthropods
 #AIC = 1073
-abundance.model_crawling<-glm(abundance ~ Trap, data=crawling,family = negative.binomial(2))
+abundance.model_crawling<-lmer(abundance ~ Trap + Date + (Site:Replicate), data=crawling,family = negative.binomial(2))
 summary(abundance.model_crawling)
 Anova(abundance.model_crawling)
 AIC(abundance.model_crawling)
@@ -810,7 +813,7 @@ abun_c.cld
 
 #abundance model for intermediate arthropods
 #AIC = 1118
-abundance.model_intermediate<-glm(abundance ~ Trap, data=intermediate, family = negative.binomial(0.9))
+abundance.model_intermediate<-lmer(abundance ~ Trap + Date + (Site:Replicate), data=intermediate, family = negative.binomial(0.9))
 summary(abundance.model_intermediate)
 Anova(abundance.model_intermediate)
 AIC(abundance.model_intermediate)
@@ -823,7 +826,7 @@ abun_i.cld
 
 #richness model for flying arthropods
 #AIC = 591
-richness.model_flying<-lm(richness ~ Trap, data=flying)
+richness.model_flying<-lmer(richness ~ Trap + Date + (Site:Replicate), data=flying)
 summary(richness.model_flying)
 Anova(richness.model_flying)
 AIC(richness.model_flying)
@@ -836,7 +839,7 @@ rich_f.cld
 
 #richness model for crawling arthropods
 #AIC = 447
-richness.model_crawling<-lm(richness ~ Trap, data=crawling)
+richness.model_crawling<-lmer(richness ~ Trap + Date + (Site:Replicate), data=crawling)
 summary(richness.model_crawling)
 Anova(richness.model_crawling)
 AIC(richness.model_crawling)
@@ -849,7 +852,7 @@ rich_c.cld
 
 #richness model for intermediate arthropods
 #AIC = 438
-richness.model_intermediate<-lm(richness ~ Trap, data=intermediate)
+richness.model_intermediate<-lmer(richness ~ Trap + Date + (Site:Replicate), data=intermediate)
 summary(richness.model_intermediate)
 Anova(richness.model_intermediate)
 AIC(richness.model_intermediate)
@@ -1091,9 +1094,9 @@ str(beetle) #now trap is listed as a factor
 library (vegan)
 
 #Create matrix of environmental variables
-env.matrix_beetle<-beetle[c(1:3,19)]
+env.matrix_beetle<-beetle[c(1:4,20)]
 #create matrix of community variables
-com.matrix_beetle<-beetle[c(4:18)]
+com.matrix_beetle<-beetle[c(5:19)]
 
 #ordination by NMDS
 NMDS_beetle<-metaMDS(com.matrix_beetle, distance="bray", k=2, autotransform=TRUE, trymax=100)
@@ -1152,23 +1155,23 @@ pairwise.adonis(com.matrix_beetle, env.matrix_beetle$Trap)
 
 ################
 #calculate beetle Abundance
-insects.abun_beetle <- rowSums(beetle[,4:18])
+insects.abun_beetle <- rowSums(beetle[,5:19])
 beetle$abundance <- insects.abun_beetle
 
 #calculate beetle Richness
-insects.rowsums_beetle <- rowSums(beetle[,4:18]>0)
+insects.rowsums_beetle <- rowSums(beetle[,5:19]>0)
 beetle$richness <- insects.rowsums_beetle
 
 #calculate beetle Shannon diversity
-diversity_beetle <-diversity(beetle[,4:18])
+diversity_beetle <-diversity(beetle[,5:19])
 beetle$diversity <-diversity_beetle
 
 #calculate beetle inverse Simpson diversity
-simpdiversity_beetle <-diversity(beetle[,4:18], "invsimpson")
+simpdiversity_beetle <-diversity(beetle[,5:19], "invsimpson")
 beetle$simpdiversity <-simpdiversity_beetle
 
 #calculate beetle Evenness
-evenness_beetle <-diversity_beetle/log(specnumber(beetle[,4:18]))
+evenness_beetle <-diversity_beetle/log(specnumber(beetle[,5:19]))
 beetle$evenness <- evenness_beetle
 
 #######
@@ -1177,10 +1180,11 @@ library(lme4)
 library(lmerTest) #to obtain p values
 library (emmeans) #for pairwise comparisons
 library (multcompView) #to view letters
+library (car)
 
 #beetle richness
 ##AIC 77 
-richness.model_beetle<-lmer(richness ~ Trap + Date + (1 | Site), data=beetle)
+richness.model_beetle<-lmer(richness ~ Trap + Date + (1 | Site:Replicate), data=beetle)
 summary(richness.model_beetle)
 Anova(richness.model_beetle)
 AIC(richness.model_beetle)
@@ -1193,7 +1197,7 @@ rich.cld_beetle
 
 #beetle abundance
 ##AIC 77 
-abundance.model_beetle<-lmer(abundance ~ Trap + Date + (1 | Site), data=beetle)
+abundance.model_beetle<-lmer(abundance ~ Trap + Date + (1 | Site:Replicate), data=beetle)
 summary(abundance.model_beetle)
 Anova(abundance.model_beetle)
 AIC(abundance.model_beetle)
@@ -1206,7 +1210,7 @@ abun.cld_beetle
 
 #beetle Shannon diversity
 ##AIC 54
-diversity.model_beetle<-lmer(diversity ~ Trap + Date + (1 | Site), data=beetle)
+diversity.model_beetle<-lmer(diversity ~ Trap + Date + (1 | Site:Replicate), data=beetle)
 summary(diversity.model_beetle)
 Anova(diversity.model_beetle)
 AIC(diversity.model_beetle)
@@ -1219,7 +1223,7 @@ div.cld_beetle
 
 #beetle inv simpson diversity
 ##AIC 77
-simpdiversity.model_beetle<-lmer(simpdiversity ~ Trap + Date + (1 | Site), data=beetle)
+simpdiversity.model_beetle<-lmer(simpdiversity ~ Trap + Date + (1 | Site:Replicate), data=beetle)
 summary(simpdiversity.model_beetle)
 Anova(simpdiversity.model_beetle)
 AIC(simpdiversity.model_beetle)
@@ -1232,7 +1236,7 @@ sdiv.cld_beetle
 
 #beetle evenness
 ##AIC -193 
-evenness.model_beetle<-lmer(evenness ~ Trap + Date + (1 | Site), data=beetle)
+evenness.model_beetle<-lmer(evenness ~ Trap + Date + (1 | Site:Replicate), data=beetle)
 summary(evenness.model_beetle)
 Anova(evenness.model_beetle)
 AIC(evenness.model_beetle)
