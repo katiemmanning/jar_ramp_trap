@@ -2423,7 +2423,7 @@ figure4
 
 library(ggvegan)
 
-pdf("Figure 5.pdf", height=9, width=7)
+pdf("Figure 5.pdf", height=12, width=8)
 par(mfrow=c(3,1), mar=c(4.1, 4.8, 1.5, 8.1),xpd=TRUE) 
 
 plot(NMDS_order, disp='sites', type='n')
@@ -2437,7 +2437,7 @@ points(NMDS_order, display="sites", select=which(env.matrix_order$Trap=="ramp"),
 points(NMDS_order, display="sites", select=which(env.matrix_order$Trap=="sticky"), pch=25, col="#CC79A7")
 ordilabel(NMDS_order, display="species", select =which (include_order==TRUE & crawling_order == TRUE), cex=0.6, col="black", fill="white")
 ordilabel(NMDS_order, display="species", select =which (include_order==TRUE & flying_order == TRUE), cex=0.6, col="white", fill="black")
-legend(2.8,1.35, title=NULL, pch=c(19,17,15,25), col=c("#E69F00","#009E73","#F0E442","#CC79A7"), cex=.7, legend=c("Pitfall", "Jar ramp", "Yellow ramp", "Yellow sticky card"))
+legend(1,1, title=NULL, pch=c(19,17,15,25), col=c("#E69F00","#009E73","#F0E442","#CC79A7"), cex=.7, legend=c("Pitfall", "Jar ramp", "Yellow ramp", "Yellow sticky card"))
 text(-4, 0.95, "A", cex=2)
 
 plot(NMDS, disp='sites', type='n')
@@ -2456,12 +2456,14 @@ text(-3.7, 1.5, "B", cex=2)
 dev.off()
 
 #Figure 6 - flying vs crawling vs intermediate (functional level)
-figure6 <- ggarrange(abundance.plot_flying, abundance.plot_crawling,abundance.plot_intermediate,richness.plot_flying,richness.plot_crawling,richness.plot_intermediate,
-                     labels = c("A", "B", "C", "D", "E", "F"),
-                     ncol = 3, nrow = 2,
+figure6 <- ggarrange(abundance.plot_flying,abundance.plot_crawling,abundance.plot_intermediate,richness.plot_flying,richness.plot_crawling,richness.plot_intermediate,
+                     diversity.plot_flying,diversity.plot_crawling,diversity.plot_intermediate,simpdiversity.plot_flying, simpdiversity.plot_crawling, simpdiversity.plot_intermediate,
+                     evenness.plot_flying,evenness.plot_crawling,evenness.plot_intermediate,
+                     #labels = c("A", "B", "C", "D", "E", "F"),
+                     ncol = 3, nrow = 5,
                      common.legend = TRUE, legend = "bottom")
 figure6
-pdf("Figure 6.pdf", height=6, width=8) #height and width in inches
+pdf("Figure 6.pdf", height=10, width=8) #height and width in inches
 figure6
 dev.off()
 
@@ -2481,6 +2483,8 @@ trapsize
 pdf("Supp figure 1.pdf", height=6, width=8) #height and width in inches
 trapsize
 dev.off()
+
+###CHECK SUPP TABLES -- There may be more now
 
 #Table S1 - abundances 
 #Table S2 - comparisons
