@@ -729,6 +729,7 @@ flying<-read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/
 crawling<-read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/crawling.csv")
 intermediate<-read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/intermediate.csv")
 
+#change trap to be listed as a factor
 str(flying) #trap is listed as character 
 flying$Trap <- as.factor(flying$Trap)
 str(flying) #now trap is listed as a factor
@@ -741,27 +742,46 @@ str(intermediate) #trap is listed as character
 intermediate$Trap <- as.factor(intermediate$Trap)
 str(intermediate) #now trap is listed as a factor
 
+#richness
+#calculating richness for flying
+flying.rich <- rowSums(flying[,6:27]>0)
+flying$richness <- flying.rich
+
+#calculating richness for crawling
+crawling.rich <- rowSums(crawling[,6:10]>0)
+crawling$richness <- crawling.rich
+
+#calculating richness for intermediate
+intermediate.rich <- rowSums(intermediate[,6:15]>0)
+intermediate$richness <- intermediate.rich
+
+#delete rows were richness is zero
+flying <- flying[rowSums(flying[,6:27])>0,]
+crawling <- crawling[rowSums(crawling[,6:10])>0,]
+intermediate <- intermediate[rowSums(intermediate[,6:15])>0,]
+
+
 #Abundance
 #calculating abundance for flying
 flying.abun <- rowSums(flying[,6:27])
 flying$abundance <- flying.abun
 
-mean(flying$abundance) #43.18
-sd(flying$abundance)/sqrt(10) #16.32
+mean(flying$abundance) #45.97
+sd(flying$abundance)/sqrt(10) #16.45
 
 #calculating abundance for crawling
 crawling.abun <- rowSums(crawling[,6:10])
 crawling$abundance <- crawling.abun
 
-mean(crawling$abundance) #18.4
-sd(crawling$abundance)/sqrt(10) #8.14
+mean(crawling$abundance) #21.08
+sd(crawling$abundance)/sqrt(10) #8.38
 
 #calculating abundance for intermediate
 intermediate.abun <- rowSums(intermediate[,6:15])
 intermediate$abundance <- intermediate.abun
 
-mean(intermediate$abundance) #20.53
-sd(intermediate$abundance)/sqrt(10) #15.94
+mean(intermediate$abundance) #23.20
+sd(intermediate$abundance)/sqrt(10) #16.76
 
 
 #richness
@@ -769,22 +789,22 @@ sd(intermediate$abundance)/sqrt(10) #15.94
 flying.rich <- rowSums(flying[,6:27]>0)
 flying$richness <- flying.rich
 
-mean(flying$richness) #3.88
-sd(flying$richness)/sqrt(10) #0.85
+mean(flying$richness) #4.13
+sd(flying$richness)/sqrt(10) #0.82
 
 #calculating richness for crawling
 crawling.rich <- rowSums(crawling[,6:10]>0)
 crawling$richness <- crawling.rich
 
-mean(crawling$richness) #2.65
-sd(crawling$richness)/sqrt(10) #0.51
+mean(crawling$richness) #3.03
+sd(crawling$richness)/sqrt(10) #0.42
 
 #calculating richness for intermediate
 intermediate.rich <- rowSums(intermediate[,6:15]>0)
 intermediate$richness <- intermediate.rich
 
-mean(intermediate$richness) #1.68
-sd(intermediate$richness)/sqrt(10) #0.32
+mean(intermediate$richness) #1.90
+sd(intermediate$richness)/sqrt(10) #0.27
 
 
 #Shannon diversity
@@ -792,21 +812,21 @@ sd(intermediate$richness)/sqrt(10) #0.32
 flying.div <- diversity(flying[,6:27])
 flying$diversity <- flying.div
 
-mean(flying$diversity) #0.77
+mean(flying$diversity) #0.82
 sd(flying$diversity)/sqrt(10) #0.16
 
 #calculating shannon diversity for crawling
 crawling.div <- diversity(crawling[,6:10])
 crawling$diversity <- crawling.div
 
-mean(crawling$diversity) #0.69
-sd(crawling$diversity)/sqrt(10) #0.16
+mean(crawling$diversity) #0.79
+sd(crawling$diversity)/sqrt(10) #0.14
 
 #calculating shannon diversity for intermediate
 intermediate.div <- diversity(intermediate[,6:15])
 intermediate$diversity <- intermediate.div
 
-mean(intermediate$diversity) #0.32
+mean(intermediate$diversity) #0.36
 sd(intermediate$diversity)/sqrt(10) #0.11
 
 
@@ -815,22 +835,22 @@ sd(intermediate$diversity)/sqrt(10) #0.11
 flying.simpdiv <- diversity(flying[,6:27], "invsimpson")
 flying$simpdiversity <- flying.simpdiv
 
-mean(flying$simpdiversity) #inf
-sd(flying$simpdiversity)/sqrt(10) 
+mean(flying$simpdiversity) #2.13
+sd(flying$simpdiversity)/sqrt(10) #0.27 
 
 #calculating inv simp diversity for crawling
 crawling.simpdiv <- diversity(crawling[,6:10], "invsimpson")
 crawling$simpdiversity <- crawling.simpdiv
 
-mean(crawling$simpdiversity) #inf
-sd(crawling$simpdiversity)/sqrt(10)
+mean(crawling$simpdiversity) #2.16
+sd(crawling$simpdiversity)/sqrt(10) #0.28
 
 #calculating inv simp diversity for intermediate
 intermediate.simpdiv <- diversity(intermediate[,6:15], "invsimpson")
 intermediate$simpdiversity <- intermediate.simpdiv
 
-mean(intermediate$simpdiversity) #inf
-sd(intermediate$simpdiversity)/sqrt(10)
+mean(intermediate$simpdiversity) #1.42
+sd(intermediate$simpdiversity)/sqrt(10) #0.15
 
 
 #Evenness
@@ -858,7 +878,7 @@ sd(intermediate$evenness)/sqrt(10)
 
 #Abundance
 #abundance model for flying arthropods
-#AIC = 1219
+#AIC = 1194
 abundance.model_flying<-glmer(abundance ~ Trap + Date + (1|Site:Replicate), data=flying,family = negative.binomial(2.5))
 summary(abundance.model_flying)
 Anova(abundance.model_flying)
@@ -871,7 +891,7 @@ abun_f.cld<-multcomp::cld(abun_f.emm, alpha = 0.05, Letters = LETTERS)
 abun_f.cld
 
 #abundance model for crawling arthropods
-#AIC = 1053
+#AIC = 1013
 abundance.model_crawling<-glmer(abundance ~ Trap + Date + (1|Site:Replicate), data=crawling,family = negative.binomial(2))
 summary(abundance.model_crawling)
 Anova(abundance.model_crawling)
@@ -884,7 +904,7 @@ abun_c.cld<-multcomp::cld(abun_c.emm, alpha = 0.05, Letters = LETTERS)
 abun_c.cld
 
 #abundance model for intermediate arthropods
-#AIC = 1065
+#AIC = 1021
 abundance.model_intermediate<-glmer(abundance ~ Trap + Date + (1|Site:Replicate), data=intermediate, family = negative.binomial(0.9))
 summary(abundance.model_intermediate)
 Anova(abundance.model_intermediate)
@@ -892,14 +912,14 @@ AIC(abundance.model_intermediate)
 #pairwise comparison
 abun_i.emm<-emmeans(abundance.model_intermediate,pairwise~Trap)
 abun_i.emm
-#results: diff btw all
+#results: no diff btw jar and pitfall or jar and sticky, diff btw all else
 abun_i.cld<-multcomp::cld(abun_i.emm, alpha = 0.05, Letters = LETTERS)
 abun_i.cld
 
 
 #Richness
 #richness model for flying arthropods
-#AIC = 587
+#AIC = 552
 richness.model_flying<-lmer(richness ~ Trap + Date + (1|Site:Replicate), data=flying)
 summary(richness.model_flying)
 Anova(richness.model_flying)
@@ -907,12 +927,12 @@ AIC(richness.model_flying)
 #pairwise comparison
 rich_f.emm<-emmeans(richness.model_flying,pairwise~Trap)
 rich_f.emm
-#results: diff btw all
+#results: no diff btw jar and pitfall, diff btw all else
 rich_f.cld<-multcomp::cld(rich_f.emm, alpha = 0.05, Letters = LETTERS)
 rich_f.cld
 
 #richness model for crawling arthropods
-#AIC = 453
+#AIC = 395
 richness.model_crawling<-lmer(richness ~ Trap + Date + (1|Site:Replicate), data=crawling)
 summary(richness.model_crawling)
 Anova(richness.model_crawling)
@@ -925,7 +945,7 @@ rich_c.cld<-multcomp::cld(rich_c.emm, alpha = 0.05, Letters = LETTERS)
 rich_c.cld
 
 #richness model for intermediate arthropods
-#AIC = 436
+#AIC = 356
 richness.model_intermediate<-lmer(richness ~ Trap + Date + (1|Site:Replicate), data=intermediate)
 summary(richness.model_intermediate)
 Anova(richness.model_intermediate)
@@ -933,7 +953,7 @@ AIC(richness.model_intermediate)
 #pairwise comparison
 rich_i.emm<-emmeans(richness.model_intermediate,pairwise~Trap)
 rich_i.emm
-#results: no diff btw jar-pitfall, diff between all else
+#results: no diff btw jar-pitfall or jar-sticky, diff between all else
 rich_i.cld<-multcomp::cld(rich_i.emm, alpha = 0.05, Letters = LETTERS)
 rich_i.cld
 
