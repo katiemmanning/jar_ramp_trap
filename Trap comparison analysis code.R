@@ -878,7 +878,7 @@ sd(intermediate$evenness)/sqrt(10)
 
 #Abundance
 #abundance model for flying arthropods
-#AIC = 1194
+#AIC = 1165
 abundance.model_flying<-glmer(abundance ~ Trap + Date + (1|Site:Replicate), data=flying,family = negative.binomial(4.5))
 summary(abundance.model_flying)
 Anova(abundance.model_flying)
@@ -904,7 +904,7 @@ abun_c.cld<-multcomp::cld(abun_c.emm, alpha = 0.05, Letters = LETTERS)
 abun_c.cld
 
 #abundance model for intermediate arthropods
-#AIC = 1021
+#AIC = 977
 abundance.model_intermediate<-glmer(abundance ~ Trap + Date + (1|Site:Replicate), data=intermediate, family = negative.binomial(2))
 summary(abundance.model_intermediate)
 Anova(abundance.model_intermediate)
@@ -912,7 +912,7 @@ AIC(abundance.model_intermediate)
 #pairwise comparison
 abun_i.emm<-emmeans(abundance.model_intermediate,pairwise~Trap)
 abun_i.emm
-#results: no diff btw jar and pitfall or jar and sticky, diff btw all else
+#results:  diff btw all 
 abun_i.cld<-multcomp::cld(abun_i.emm, alpha = 0.05, Letters = LETTERS)
 abun_i.cld
 
@@ -1055,7 +1055,7 @@ even_f.cld<-multcomp::cld(even_f.emm, alpha = 0.05, Letters = LETTERS)
 even_f.cld
 
 #evenness model for crawling arthropods
-#AIC = -27
+#AIC = -58
 evenness.model_crawling<-lmer(evenness ~ Trap + (1|Site:Replicate), data=crawling)
 summary(evenness.model_crawling)
 Anova(evenness.model_crawling)
@@ -1068,7 +1068,7 @@ even_c.cld<-multcomp::cld(even_c.emm, alpha = 0.05, Letters = LETTERS)
 even_c.cld
 
 #evenness model for intermediate arthropods
-#AIC = 23
+#AIC = 15
 evenness.model_intermediate<-lmer(evenness ~ Trap + (1|Site:Replicate), data=intermediate)
 summary(evenness.model_intermediate)
 Anova(evenness.model_intermediate)
@@ -1076,7 +1076,7 @@ AIC(evenness.model_intermediate)
 #pairwise comparison
 even_i.emm<-emmeans(evenness.model_intermediate,pairwise~Trap)
 even_i.emm
-#results: no diff btw sticky and jar, diff btw all else
+#results: no diff btw jar and pitfall, sticky and jar, or pitfall and sticky --- only ramp was different (lowest)
 even_i.cld<-multcomp::cld(even_i.emm, alpha = 0.05, Letters = LETTERS)
 even_i.cld
 
