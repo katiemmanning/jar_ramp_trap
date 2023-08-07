@@ -2783,7 +2783,7 @@ points(NMDS_order, display="sites", select=which(env.matrix_order$Trap=="ramp"),
 points(NMDS_order, display="sites", select=which(env.matrix_order$Trap=="sticky"), pch=25, col="#CC79A7")
 ordilabel(NMDS_order, display="species", select =which (include_order==TRUE & crawling_order == TRUE), cex=0.6, col="black", fill="white")
 ordilabel(NMDS_order, display="species", select =which (include_order==TRUE & flying_order == TRUE), cex=0.6, col="white", fill="black")
-legend(1.66,1.62, title=NULL, pch=c(19,17,15,25), col=c("#E69F00","#009E73","#F0E442","#CC79A7"), cex=.7, legend=c("Pitfall", "Jar ramp", "Yellow ramp", "Yellow sticky card"))
+legend(1.65,1.62, title=NULL, pch=c(19,17,15,25), col=c("#E69F00","#009E73","#F0E442","#CC79A7"), cex=.7, legend=c("Pitfall", "Jar ramp", "Yellow ramp", "Yellow sticky card"))
 text(-2.5, 1.43, "A", cex=2)
 
 plot(NMDS, disp='sites', type='n', xlim=c(-1,1), ylim=c(-1.5,1.5))
