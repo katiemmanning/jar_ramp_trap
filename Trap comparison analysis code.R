@@ -2769,10 +2769,10 @@ figure4
 
 library(ggvegan)
 
-pdf("Figure 5.pdf", height=12, width=8)
+pdf("Figure 5.pdf", height=10, width=6)
 par(mfrow=c(3,1), mar=c(4.1, 4.8, 1.5, 8.1),xpd=TRUE) 
 
-plot(NMDS_order, disp='sites', type='n')
+plot(NMDS_order, disp='sites', type='n', xlim=c(-1,1), ylim=c(-1.5,1.5))
 ordiellipse(NMDS_order, env.matrix_order$Trap, draw="polygon", col="#E69F00",kind="sd", conf=0.95, label=FALSE, show.groups = "pitfall")
 ordiellipse(NMDS_order, env.matrix_order$Trap, draw="polygon", col="#009E73",kind="sd", conf=0.95, label=FALSE, show.groups = "jar") 
 ordiellipse(NMDS_order, env.matrix_order$Trap, draw="polygon", col="#F0E442",kind="sd", conf=0.95, label=FALSE, show.groups = "ramp") 
@@ -2783,10 +2783,10 @@ points(NMDS_order, display="sites", select=which(env.matrix_order$Trap=="ramp"),
 points(NMDS_order, display="sites", select=which(env.matrix_order$Trap=="sticky"), pch=25, col="#CC79A7")
 ordilabel(NMDS_order, display="species", select =which (include_order==TRUE & crawling_order == TRUE), cex=0.6, col="black", fill="white")
 ordilabel(NMDS_order, display="species", select =which (include_order==TRUE & flying_order == TRUE), cex=0.6, col="white", fill="black")
-legend(1,1, title=NULL, pch=c(19,17,15,25), col=c("#E69F00","#009E73","#F0E442","#CC79A7"), cex=.7, legend=c("Pitfall", "Jar ramp", "Yellow ramp", "Yellow sticky card"))
-text(-4, 0.95, "A", cex=2)
+legend(1.66,1.62, title=NULL, pch=c(19,17,15,25), col=c("#E69F00","#009E73","#F0E442","#CC79A7"), cex=.7, legend=c("Pitfall", "Jar ramp", "Yellow ramp", "Yellow sticky card"))
+text(-2.5, 1.43, "A", cex=2)
 
-plot(NMDS, disp='sites', type='n')
+plot(NMDS, disp='sites', type='n', xlim=c(-1,1), ylim=c(-1.5,1.5))
 ordiellipse(NMDS, env.matrix$Trap, draw="polygon", col="#E69F00",kind="sd", conf=0.95, label=FALSE, show.groups = "pitfall")
 ordiellipse(NMDS, env.matrix$Trap, draw="polygon", col="#009E73",kind="sd", conf=0.95, label=FALSE, show.groups = "jar") 
 ordiellipse(NMDS, env.matrix$Trap, draw="polygon", col="#F0E442",kind="sd", conf=0.95, label=FALSE, show.groups = "ramp") 
@@ -2798,7 +2798,7 @@ points(NMDS, display="sites", select=which(env.matrix$Trap=="sticky"), pch=25, c
 ordilabel(NMDS, display="species", select =which (include_func==TRUE & crawling_func == TRUE), cex=0.6, col="black", fill="white")
 ordilabel(NMDS, display="species", select =which (include_func==TRUE & flying_func == TRUE), cex=0.6, col="white", fill="black")
 ordilabel(NMDS, display="species", select =which (include_func==TRUE & intermediate_func == TRUE), cex=0.6, col="black", fill="gray")
-text(-3.7, 1.5, "B", cex=2)
+text(-2.5, 1.43, "B", cex=2)
 dev.off()
 
 #Figure 6 - flying vs crawling vs intermediate (functional level)
