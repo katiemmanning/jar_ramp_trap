@@ -239,7 +239,7 @@ even.cld_order
 ###########
 library(ggplot2)
 #order abundance plot
-abundance.plot_order<-ggplot(insects_order, aes(x =Trap, y = abundance, fill=Trap))+
+abundancelog10.plot_order<-ggplot(insects_order, aes(x =Trap, y = abundance, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
   theme(legend.position ="NULL")+
@@ -248,23 +248,36 @@ abundance.plot_order<-ggplot(insects_order, aes(x =Trap, y = abundance, fill=Tra
   scale_y_continuous(trans="log10")+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
   geom_text(data=abun.cld_order, aes(y = 600, label = .group))
+abundancelog10.plot_order
+
+abundance.plot_order<-ggplot(insects_order, aes(x =Trap, y = abundance, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(x="", y="Abundance")+
+  ylim(0,NA)+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=abun.cld_order, aes(y = 500, label = .group))
 abundance.plot_order
 
 #order richness plot
 richness.plot_order<-ggplot(insects_order, aes(x =Trap, y = richness, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0, NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(x="", y="Richness")+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
-  geom_text(data=rich.cld_order, aes(y = 25, label = .group))
+  geom_text(data=rich.cld_order, aes(y = 20, label = .group))
 richness.plot_order
 
 #order Shannon diversity plot
 diversity.plot_order<-ggplot(insects_order, aes(x =Trap, y = diversity, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0, NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(x="", y="Shannon Diversity")+
@@ -276,22 +289,25 @@ diversity.plot_order
 simpdiversity.plot_order<-ggplot(insects_order, aes(x =Trap, y = simpdiversity, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0, NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(x="", y="Inverse Simpson Diversity")+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
-  geom_text(data=sdiv.cld_order, aes(y = 6.5, label = .group))
+  geom_text(data=sdiv.cld_order, aes(y = 7, label = .group))
 simpdiversity.plot_order
 
 #order evenness plot
 evenness.plot_order<-ggplot(insects_order, aes(x =Trap, y = evenness, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0, NA)+
+  scale_y_continuous(labels = function(x) format(x, nsmall = 1))+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(x="", y="Evenness")+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
-  geom_text(data=even.cld_order, aes(y = 1.2, label = .group))
+  geom_text(data=even.cld_order, aes(y = 1, label = .group))
 evenness.plot_order
 
 #Mush order plots together
@@ -654,7 +670,7 @@ even.cld
 ###########
 library(ggplot2)
 #abundance plot
-abundance.plot<-ggplot(insects, aes(x =Trap, y = abundance, fill=Trap))+
+abundance.plotlog10<-ggplot(insects, aes(x =Trap, y = abundance, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
   theme(legend.position ="NULL")+
@@ -663,23 +679,36 @@ abundance.plot<-ggplot(insects, aes(x =Trap, y = abundance, fill=Trap))+
   scale_y_continuous(trans="log10")+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
   geom_text(data=abun.cld, aes(y = 600, label = .group))
+abundance.plotlog10
+
+abundance.plot<-ggplot(insects, aes(x =Trap, y = abundance, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  ylim(0, NA)+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(x="", y="")+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=abun.cld, aes(y = 500, label = .group))
 abundance.plot
 
 #richness plot
 richness.plot<-ggplot(insects, aes(x =Trap, y = richness, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0, NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(x="", y="")+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
-  geom_text(data=rich.cld, aes(y = 25, label = .group))
+  geom_text(data=rich.cld, aes(y = 20, label = .group))
 richness.plot
 
 #Shannon diversity plot
 diversity.plot<-ggplot(insects, aes(x =Trap, y = diversity, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0, NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(x="", y="")+
@@ -691,22 +720,24 @@ diversity.plot
 simpdiversity.plot<-ggplot(insects, aes(x =Trap, y = simpdiversity, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0, NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(x="", y="")+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
-  geom_text(data=sdiv.cld, aes(y = 7.4, label = .group))
+  geom_text(data=sdiv.cld, aes(y = 7, label = .group))
 simpdiversity.plot
 
 #evenness plot
 evenness.plot<-ggplot(insects, aes(x =Trap, y = evenness, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0, NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(x="", y="")+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
-  geom_text(data=even.cld, aes(y = 1.2, label = .group))
+  geom_text(data=even.cld, aes(y = 1, label = .group))
 evenness.plot
 
 #Mush order plots together
@@ -1083,7 +1114,7 @@ even_i.cld
 ###
 
 ##plot flying abundance
-abundance.plot_flying<-ggplot(flying, aes(x =Trap, y = abundance, fill=Trap))+
+abundancelog10.plot_flying<-ggplot(flying, aes(x =Trap, y = abundance, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
   theme(legend.position ="NULL")+
@@ -1093,10 +1124,22 @@ abundance.plot_flying<-ggplot(flying, aes(x =Trap, y = abundance, fill=Trap))+
   theme (plot.title = element_text(hjust=0.5))+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
   geom_text(data=abun_f.cld, aes(y = 600, label = .group))
+abundancelog10.plot_flying
+
+abundance.plot_flying<-ggplot(flying, aes(x =Trap, y = abundance, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  ylim(0,NA)+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(title="Flying", x="", y="Abundance")+
+  theme (plot.title = element_text(hjust=0.5))+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=abun_f.cld, aes(y = 350, label = .group))
 abundance.plot_flying
 
 ##plot crawling abundance
-abundance.plot_crawling<-ggplot(crawling, aes(x =Trap, y = abundance, fill=Trap))+
+abundancelog10.plot_crawling<-ggplot(crawling, aes(x =Trap, y = abundance, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
   theme(legend.position ="NULL")+
@@ -1106,10 +1149,22 @@ abundance.plot_crawling<-ggplot(crawling, aes(x =Trap, y = abundance, fill=Trap)
   theme (plot.title = element_text(hjust=0.5))+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
   geom_text(data=abun_c.cld, aes(y = 600, label = .group))
+abundancelog10.plot_crawling
+
+abundance.plot_crawling<-ggplot(crawling, aes(x =Trap, y = abundance, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  ylim(0,NA)+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(title="Crawling", x="", y="")+
+  theme (plot.title = element_text(hjust=0.5))+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=abun_c.cld, aes(y = 350, label = .group))
 abundance.plot_crawling
 
 ##plot intermediate abundance
-abundance.plot_intermediate<-ggplot(intermediate, aes(x =Trap, y = abundance, fill=Trap))+
+abundancelog10.plot_intermediate<-ggplot(intermediate, aes(x =Trap, y = abundance, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
   theme(legend.position ="NULL")+
@@ -1119,48 +1174,64 @@ abundance.plot_intermediate<-ggplot(intermediate, aes(x =Trap, y = abundance, fi
   theme (plot.title = element_text(hjust=0.5))+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
   geom_text(data=abun_i.cld, aes(y = 600, label = .group))
+abundancelog10.plot_intermediate
+
+abundance.plot_intermediate<-ggplot(intermediate, aes(x =Trap, y = abundance, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  ylim(0,NA)+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(title="Intermediate", x="", y="")+
+  theme (plot.title = element_text(hjust=0.5))+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=abun_i.cld, aes(y = 350, label = .group))
 abundance.plot_intermediate
 
 ##plot flying richness
 richness.plot_flying<-ggplot(flying, aes(x =Trap, y = richness, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0,NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(title="", x="", y="Richness")+
   theme (plot.title = element_text(hjust=0.5))+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
-  geom_text(data=rich_f.cld, aes(y = 15, label = .group))
+  geom_text(data=rich_f.cld, aes(y = 13, label = .group))
 richness.plot_flying
 
 ##plot crawling richness
 richness.plot_crawling<-ggplot(crawling, aes(x =Trap, y = richness, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0,NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(title="", x="", y="")+
   theme (plot.title = element_text(hjust=0.5))+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
-  geom_text(data=rich_c.cld, aes(y = 15, label = .group))
+  geom_text(data=rich_c.cld, aes(y = 13, label = .group))
 richness.plot_crawling
 
 ##plot intermediate richness
 richness.plot_intermediate<-ggplot(intermediate, aes(x =Trap, y = richness, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0,NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(title="", x="", y="")+
   theme (plot.title = element_text(hjust=0.5))+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
-  geom_text(data=rich_i.cld, aes(y = 15, label = .group))
+  geom_text(data=rich_i.cld, aes(y = 13, label = .group))
 richness.plot_intermediate
 
 ##plot flying shannon diversity
 diversity.plot_flying<-ggplot(flying, aes(x =Trap, y = diversity, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0,NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(title="", x="", y="Shannon Diversity")+
@@ -1173,6 +1244,7 @@ diversity.plot_flying
 diversity.plot_crawling<-ggplot(crawling, aes(x =Trap, y = diversity, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0,NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(title="", x="", y="")+
@@ -1185,6 +1257,7 @@ diversity.plot_crawling
 diversity.plot_intermediate<-ggplot(intermediate, aes(x =Trap, y = diversity, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0,NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(title="", x="", y="")+
@@ -1197,6 +1270,7 @@ diversity.plot_intermediate
 simpdiversity.plot_flying<-ggplot(flying, aes(x =Trap, y = simpdiversity, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0,NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(title="", x="", y="Inverse Simpson Diversity")+
@@ -1209,6 +1283,7 @@ simpdiversity.plot_flying
 simpdiversity.plot_crawling<-ggplot(crawling, aes(x =Trap, y = simpdiversity, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0,NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(title="", x="", y="")+
@@ -1221,6 +1296,7 @@ simpdiversity.plot_crawling
 simpdiversity.plot_intermediate<-ggplot(intermediate, aes(x =Trap, y = simpdiversity, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0,NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(title="", x="", y="")+
@@ -1233,36 +1309,39 @@ simpdiversity.plot_intermediate
 evenness.plot_flying<-ggplot(flying, aes(x =Trap, y = evenness, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0,NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(title="", x="", y="Evenness")+
   theme (plot.title = element_text(hjust=0.5))+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
-  geom_text(data=even_f.cld, aes(y = 1.1, label = .group))
+  geom_text(data=even_f.cld, aes(y = 1.3, label = .group))
 evenness.plot_flying
 
 ##plot crawling evenness
 evenness.plot_crawling<-ggplot(crawling, aes(x =Trap, y = evenness, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0,NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(title="", x="", y="")+
   theme (plot.title = element_text(hjust=0.5))+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
-  geom_text(data=even_c.cld, aes(y = 1.1, label = .group))
+  geom_text(data=even_c.cld, aes(y = 1.3, label = .group))
 evenness.plot_crawling
 
 ##plot intermediate evenness
 evenness.plot_intermediate<-ggplot(intermediate, aes(x =Trap, y = evenness, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0,NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(title="", x="", y="")+
   theme (plot.title = element_text(hjust=0.5))+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
-  geom_text(data=even_i.cld, aes(y = 1.1, label = .group))
+  geom_text(data=even_i.cld, aes(y = 1.3, label = .group))
 evenness.plot_intermediate
 
 
@@ -1583,6 +1662,7 @@ library(ggplot2)
 abundance.plot_beetle<-ggplot(beetle, aes(x =Trap, y = abundance, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0, NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(x="", y="")+
@@ -1594,17 +1674,19 @@ abundance.plot_beetle
 richness.plot_beetle<-ggplot(beetle, aes(x =Trap, y = richness, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0, NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(x="", y="")+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
-  geom_text(data=rich.cld_beetle, aes(y = 5, label = .group))
+  geom_text(data=rich.cld_beetle, aes(y = 20, label = .group))
 richness.plot_beetle
 
 #beetle Shannon siversity plot
 diversity.plot_beetle<-ggplot(beetle, aes(x =Trap, y = diversity, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0, NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(x="", y="")+
@@ -1616,22 +1698,24 @@ diversity.plot_beetle
 simpdiversity.plot_beetle<-ggplot(beetle, aes(x =Trap, y = simpdiversity, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0, NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(x="", y="")+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
-  geom_text(data=sdiv.cld_beetle, aes(y = 3, label = .group))
+  geom_text(data=sdiv.cld_beetle, aes(y = 7, label = .group))
 simpdiversity.plot_beetle
 
 #beetle evenness plot
 evenness.plot_beetle<-ggplot(beetle, aes(x =Trap, y = evenness, fill=Trap))+
   geom_boxplot()+
   theme_bw()+
+  ylim(0, NA)+
   theme(legend.position ="NULL")+
   theme(axis.text.x=element_blank())+
   labs(x="", y="")+
   scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
-  geom_text(data=even.cld_beetle, aes(y = 1.2, label = .group))
+  geom_text(data=even.cld_beetle, aes(y = 1.1, label = .group))
 evenness.plot_beetle
 
 #Mush order plots together
