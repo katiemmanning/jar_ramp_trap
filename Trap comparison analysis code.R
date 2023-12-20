@@ -2829,17 +2829,17 @@ functionalfigure <- ggarrange(richness.plot, abundance.plot, diversity.plot, sim
                               ncol = 5, nrow = 1)
 functionalfigure
 
-#c - beetle
+#c - beetle -- not using
 beetlefigure <- ggarrange(richness.plot_beetle, abundance.plot_beetle, diversity.plot_beetle, simpdiversity.plot_beetle, evenness.plot_beetle,
                           ncol = 5, nrow = 1,
                           common.legend = TRUE, legend = "bottom")
 beetlefigure
 
-figure4 <- ggarrange(orderfigure, functionalfigure, beetlefigure,
-                     labels = c("A", "B", "C"),
-                     ncol = 1, nrow = 3,
+figure4 <- ggarrange(orderfigure, functionalfigure,
+                     labels = c("A", "B"),
+                     ncol = 1, nrow = 2,
                      common.legend = TRUE, legend = "bottom")
-pdf("Figure 4.pdf", height=10, width=15) #height and width in inches
+pdf("boxplots.pdf", height=10, width=15) #height and width in inches
 figure4
 dev.off()
 figure4
