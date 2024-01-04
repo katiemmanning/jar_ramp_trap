@@ -321,10 +321,122 @@ orderfigure
 dev.off()
 
 orderfigure
+#####
+#Cannot do functional group abundance by trap type for order
+######
+
+#species accumulation for order
+library (BiodiversityR)
+library(ggplot2)
+
+#individual curves for each trap type
+pitfall.com.matrix_order<-pitfall_order[c(5:16)]
+pitfall_curve_order<-accumresult(pitfall.com.matrix_order, method = "exact", permutations = 1000)
+
+jar.com.matrix_order<-jar_order[c(5:16)]
+jar_curve_order<-accumresult(jar.com.matrix_order, method = "exact", permutations = 1000)
+
+ramp.com.matrix_order<-ramp_order[c(5:16)]
+ramp_curve_order<-accumresult(ramp.com.matrix_order, method = "exact", permutations = 1000)
+
+sticky.com.matrix_order<-sticky_order[c(5:16)]
+sticky_curve_order<-accumresult(sticky.com.matrix_order, method = "exact", permutations = 1000)
+
+#first-order jackknife estimates are based on the number of singletons
+#second-order jackknife estimates are based on the number of singletons and doubletons
+
+#calculates order richness for each sample
+specnumber(com.matrix_order) #ranges from 1 to 10
+
+#calculates order richness by treatment (trap)
+specnumber(com.matrix_order, groups = insects_order$Trap) #jar=12; pitfall=9; ramp=12; sticky=10
+
+#total richness and jackknife
+rich <- diversityresult(com.matrix_order, y=NULL, index = "richness")
+rich # 12
+j1 <- diversityresult(com.matrix_order, y=NULL, index = "jack1")
+j1 # 12
+#100%
+j2 <- diversityresult(com.matrix_order, y=NULL, index = "jack2")
+j2 # 12
+#100%
+
+#jar jackknife; richness = 12
+j1.j <- diversityresult(jar.com.matrix_order, y=NULL, index = "jack1")
+j1.j # 13.952381
+#86%
+j2.j <- diversityresult(jar.com.matrix_order, y=NULL, index = "jack2")
+j2.j # 14.927991
+#80%
+
+#pitfall jackknife; richness = 9
+j1.p <- diversityresult(pitfall.com.matrix_order, y=NULL, index = "jack1")
+j1.p # 9.974359
+#90%
+j2.p <- diversityresult(pitfall.com.matrix_order, y=NULL, index = "jack2")
+j2.p # 10.923077
+#82%
+
+#ramp jackknife; richness = 12
+j1.r <- diversityresult(ramp.com.matrix_order, y=NULL, index = "jack1")
+j1.r # 12
+#100%
+j2.r <- diversityresult(ramp.com.matrix_order, y=NULL, index = "jack2")
+j2.r # 11.070848
+#108% --> 100%
+
+#sticky jackknife; richness = 10
+j1.s <- diversityresult(sticky.com.matrix_order, y=NULL, index = "jack1")
+j1.s # 10
+#100%
+j2.s <- diversityresult(sticky.com.matrix_order, y=NULL, index = "jack2")
+j2.s # 10
+#100%
+
+#BiodiversityR::accumcomp
+Accum.1_order <- accumcomp(com.matrix_order, y=env.matrix_order, factor='Trap', 
+                     method='random', conditioned=FALSE, plotit=FALSE)
+Accum.1_order
+
+#BiodiversityR::accumcomp.long
+accum.long1_order <- accumcomp.long(Accum.1_order, ci=NA, label.freq=5)
+head(accum.long1_order)
+
+#plot
+#empty canvas
+BioR.theme <- theme(
+  panel.background = element_blank(),
+  panel.border = element_blank(),
+  panel.grid = element_blank(),
+  axis.line = element_line("gray25"),
+  text = element_text(size = 12),
+  axis.text = element_text(size = 10, colour = "gray25"),
+  axis.title = element_text(size = 14, colour = "gray25"),
+  legend.title = element_text(size = 14),
+  legend.text = element_text(size = 14),
+  legend.key = element_blank())
+
+order_accum <- ggplot(data=accum.long1_order, aes(x = Sites, y = Richness, ymax = UPR, ymin = LWR)) + 
+  scale_x_continuous(expand=c(0, 1), sec.axis = dup_axis(labels=NULL, name=NULL)) +
+  scale_y_continuous(sec.axis = dup_axis(labels=NULL, name=NULL)) +
+  scale_color_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  scale_shape_manual(values=c(19,17,15,25))+
+  geom_line(aes(colour=Grouping), size=0.1) +
+  geom_ribbon(aes(colour=Grouping, fill=after_scale(alpha(colour, 0.3))), 
+              show.legend=FALSE, linetype = 0) + 
+  geom_point(data=subset(accum.long1_order, labelit==TRUE), 
+             aes(colour=Grouping, shape=Grouping), size=3) +
+  BioR.theme +
+  labs(x = "", y = "", colour = "Trap", shape = "Trap")
+order_accum
+
+pdf("order_accum.pdf", height=6, width=8) #height and width in inches
+order_accum
+dev.off()
 
 
 ############################################################################
-#bring in mobility data sets from github
+#bring in functional data sets from github
 
 pitfall <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/Insect%20ID%202020_pitfall_functional.csv",na.strings = NULL)
 
@@ -398,7 +510,7 @@ insects$Trap <- as.factor(insects$Trap)
 str(insects) #now trap is listed as a factor
 
 #############
-#NMDS of insect community by functional classification (mobility) between trap types
+#NMDS of insect community by functional classification between trap types
 library (vegan)
 
 #Create matrix of environmental variables
@@ -639,9 +751,9 @@ functionalfigure
 dev.off()
 
 functionalfigure
-#####
+###
 
-#flying vs crawling vs intermediate
+#flying vs crawling
 #input data
 
 flying<-read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/flying.csv")
@@ -1246,8 +1358,490 @@ mobility
 dev.off()
 
 #####################
+#species accumulation
+library (BiodiversityR)
+library(ggplot2)
+
+#individual curves for each trap type
+pitfall.com.matrix<-pitfall[c(5:43)]
+pitfall_curve<-accumresult(pitfall.com.matrix, method = "exact", permutations = 1000)
+
+jar.com.matrix<-jar[c(5:43)]
+jar_curve<-accumresult(jar.com.matrix, method = "exact", permutations = 1000)
+
+ramp.com.matrix<-ramp[c(5:43)]
+ramp_curve<-accumresult(ramp.com.matrix, method = "exact", permutations = 1000)
+
+sticky.com.matrix<-sticky[c(5:43)]
+sticky_curve<-accumresult(sticky.com.matrix, method = "exact", permutations = 1000)
+
+#first-order jackknife estimates are based on the number of singletons
+#second-order jackknife estimates are based on the number of singletons and doubletons
+
+#calculates species richness for each sample
+specnumber(com.matrix) #ranges from 1 to 20
+
+#calculates species richness by treatment (trap)
+specnumber(com.matrix, groups = insects$Trap) #jar=26; pitfall=21; ramp=35; sticky=31
+
+#total richness and jackknife
+rich <- diversityresult(com.matrix, y=NULL, index = "richness")
+rich # 39
+j1 <- diversityresult(com.matrix, y=NULL, index = "jack1")
+j1 # 43.969697
+#89%
+j2 <- diversityresult(com.matrix, y=NULL, index = "jack2")
+j2 # 44.98167
+#87%
+
+#jar jackknife; richness = 26
+j1.j <- diversityresult(jar.com.matrix, y=NULL, index = "jack1")
+j1.j # 32.833333
+#79%
+j2.j <- diversityresult(jar.com.matrix, y=NULL, index = "jack2")
+j2.j # 35.783391
+#73%
+
+#pitfall jackknife; richness = 21
+j1.p <- diversityresult(pitfall.com.matrix, y=NULL, index = "jack1")
+j1.p # 24.897436
+#84%
+j2.p <- diversityresult(pitfall.com.matrix, y=NULL, index = "jack2")
+j2.p # 25.921053
+#81%
+
+#ramp jackknife; richness = 35
+j1.r <- diversityresult(ramp.com.matrix, y=NULL, index = "jack1")
+j1.r # 41.833333
+#84%
+j2.r <- diversityresult(ramp.com.matrix, y=NULL, index = "jack2")
+j2.r # 46.641696
+#75%
+
+#sticky jackknife; richness = 31
+j1.s <- diversityresult(sticky.com.matrix, y=NULL, index = "jack1")
+j1.s # 36.857143
+#84%
+j2.s <- diversityresult(sticky.com.matrix, y=NULL, index = "jack2")
+j2.s # 39.783972
+#78%
+
+#BiodiversityR::accumcomp
+Accum.1_functional <- accumcomp(com.matrix, y=env.matrix, factor='Trap', 
+                     method='random', conditioned=FALSE, plotit=FALSE)
+Accum.1_functional
+
+#BiodiversityR::accumcomp.long
+accum.long1_functional <- accumcomp.long(Accum.1_functional, ci=NA, label.freq=5)
+head(accum.long1_functional)
+
+#plot
+#empty canvas
+BioR.theme <- theme(
+  panel.background = element_blank(),
+  panel.border = element_blank(),
+  panel.grid = element_blank(),
+  axis.line = element_line("gray25"),
+  text = element_text(size = 12),
+  axis.text = element_text(size = 10, colour = "gray25"),
+  axis.title = element_text(size = 14, colour = "gray25"),
+  legend.title = element_text(size = 14),
+  legend.text = element_text(size = 14),
+  legend.key = element_blank())
+
+functional_accum <- ggplot(data=accum.long1_functional, aes(x = Sites, y = Richness, ymax = UPR, ymin = LWR)) + 
+  scale_x_continuous(expand=c(0, 1), sec.axis = dup_axis(labels=NULL, name=NULL)) +
+  scale_y_continuous(sec.axis = dup_axis(labels=NULL, name=NULL)) +
+  scale_color_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  scale_shape_manual(values=c(19,17,15,25))+
+  geom_line(aes(colour=Grouping), size=0.1) +
+  geom_ribbon(aes(colour=Grouping, fill=after_scale(alpha(colour, 0.3))), 
+              show.legend=FALSE, linetype = 0) + 
+  geom_point(data=subset(accum.long1_functional, labelit==TRUE), 
+             aes(colour=Grouping, shape=Grouping), size=3) +
+  BioR.theme +
+  labs(x = "", y = "Richness", colour = "Trap", shape = "Trap")
+functional_accum
+
+pdf("functional_accum.pdf", height=6, width=8) #height and width in inches
+functional_accum
+dev.off()
+
+########################################################################
+#beetles
+
+#bring in beetle data sets from github
+
+pitfall_beetle <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/2020%20beetles_pitfall.csv",na.strings = NULL)
+
+ramp_beetle <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/2020%20beetles_yellowramp.csv",na.strings = NULL)
+
+jar_beetle <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/2020%20beetles_jarramp.csv",na.strings = NULL)
+
+sticky_beetle <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/2020%20beetles_stickycard.csv",na.strings = NULL)
+
+taxa_beetle <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/beetle%20taxa.csv")
+
+#add trap type as a column on each data file
+pitfall_beetle$Trap="pitfall"
+ramp_beetle$Trap="ramp"
+jar_beetle$Trap="jar"
+sticky_beetle$Trap="sticky"
+
+#combine beetle data tables 
+library (plyr)
+pitfallramp_beetle <- rbind.fill (pitfall_beetle, ramp_beetle)
+pitfallrampjar_beetle <-rbind.fill (pitfallramp_beetle, jar_beetle)
+beetle <- rbind.fill (pitfallrampjar_beetle, sticky_beetle)
+
+str(beetle) #trap is listed as character 
+beetle$Trap <- as.factor(beetle$Trap)
+str(beetle) #now trap is listed as a factor
+
+#############
+#NMDS of beetle community between trap types
+library (vegan)
+
+#Create matrix of environmental variables
+env.matrix_beetle<-beetle[c(1:4,20)]
+#create matrix of community variables
+com.matrix_beetle<-beetle[c(5:19)]
+
+#ordination by NMDS
+NMDS_beetle<-metaMDS(com.matrix_beetle, distance="bray", k=2, autotransform=TRUE, trymax=100)
+NMDS_beetle
+stressplot(NMDS_beetle)
+#stress= "nearly zero" - 9.068076e-05 (changes each time)
+#no convergence
+#INSUFFICENT DATA
+
+#beetle NMDS visualization 
+
+#what taxa to display using "taxa"
+flying_beetle<-as.vector(t(taxa_beetle[1,]))
+flying_beetle<-flying_beetle[-1]
+crawling_beetle<-as.vector(t(taxa_beetle[2,]))
+crawling_beetle<-crawling_beetle[-1]
+intermediate_beetle<-as.vector(t(taxa_beetle[3,]))
+intermediate_beetle<-intermediate_beetle[-1]
+include_beetle<-as.vector(t(taxa_beetle[4,]))
+include_beetle<-include_beetle[-1]
+
+#plot beetle NMDS
+#8x10
+plot(NMDS_beetle, disp='sites', type="n")
+title(main="Focal taxa", adj = 0.01, line = -2, cex.main=2.5)
+#add ellipsoids with ordiellipse
+ordiellipse(NMDS_beetle, env.matrix_beetle$Trap, draw="polygon", col="#F0E442",kind="sd", conf=0.95, label=FALSE, show.groups = "ramp") 
+ordiellipse(NMDS_beetle, env.matrix_beetle$Trap, draw="polygon", col="#CC79A7",kind="sd", conf=0.95, label=FALSE, show.groups = "sticky")
+ordiellipse(NMDS_beetle, env.matrix_beetle$Trap, draw="polygon", col="#E69F00",kind="sd", conf=0.95, label=FALSE, show.groups = "pitfall")
+ordiellipse(NMDS_beetle, env.matrix_beetle$Trap, draw="polygon", col="#009E73",kind="sd", conf=0.95, label=FALSE, show.groups = "jar") 
+#display ground trap data as solid shapes - pitfall=circle, ramp trap=square, jar=triangle, flying trap as triangle outline
+points(NMDS_beetle, display="sites", select=which(env.matrix_beetle$Trap=="pitfall"),pch=19, col="#E69F00")
+points(NMDS_beetle, display="sites", select=which(env.matrix_beetle$Trap=="jar"), pch=17, col="#009E73")
+points(NMDS_beetle, display="sites", select=which(env.matrix_beetle$Trap=="ramp"), pch=15, col="#F0E442")
+points(NMDS_beetle, display="sites", select=which(env.matrix_beetle$Trap=="sticky"), pch=25, col="#CC79A7")
+#add legend
+legend(4.26,4.41, title=NULL, pch=c(19,17,15,25), col=c("#E69F00","#009E73","#F0E442","#CC79A7"), cex=.7, legend=c("Pitfall", "Jar ramp", "Yellow ramp", "Yellow sticky card"))
+#add taxa as text
+ordilabel(NMDS_beetle, display="species", select =which (include_beetle==TRUE & crawling_beetle == TRUE), cex=0.6, col="black", fill="white")
+ordilabel(NMDS_beetle, display="species", select =which (include_beetle==TRUE & flying_beetle == TRUE), cex=0.6, col="white", fill="black")
+ordilabel(NMDS_beetle, display="species", select =which (include_beetle==TRUE & intermediate_beetle == TRUE), cex=0.6, col="black", fill="grey")
+
+#bootstrapping and testing for differences between the groups (traps)
+fit<-adonis2(com.matrix_beetle ~ Trap, data = env.matrix_beetle, permutations = 999, method="bray")
+fit
+#P-value = 0.006 - 0.001
+
+#check assumption of homogeneity of multivariate dispersion 
+#P-value greater than 0.05 means assumption has been met
+distances_data<-vegdist(com.matrix_beetle)
+anova(betadisper(distances_data, env.matrix_beetle$Trap))
+#P-value = 0.7987 --- assumes homogeneity
+
+pairwise.adonis(com.matrix_beetle, env.matrix_beetle$Trap)
+#only pitfall-sticky and jar-sticky sig diff 
+
+################
+#calculate beetle Abundance
+insects.abun_beetle <- rowSums(beetle[,5:19])
+beetle$abundance <- insects.abun_beetle
+
+#calculate beetle Richness
+insects.rowsums_beetle <- rowSums(beetle[,5:19]>0)
+beetle$richness <- insects.rowsums_beetle
+
+#calculate beetle Shannon diversity
+diversity_beetle <-diversity(beetle[,5:19])
+beetle$diversity <-diversity_beetle
+
+#calculate beetle inverse Simpson diversity
+simpdiversity_beetle <-diversity(beetle[,5:19], "invsimpson")
+beetle$simpdiversity <-simpdiversity_beetle
+
+#calculate beetle Evenness
+evenness_beetle <-diversity_beetle/log(specnumber(beetle[,5:19]))
+beetle$evenness <- evenness_beetle
+
+#######
+#Mixed effects models
+library(lme4)
+library(lmerTest) #to obtain p values
+library (emmeans) #for pairwise comparisons
+library (multcompView) #to view letters
+library (car)
+
+#beetle richness
+##AIC 77 
+richness.model_beetle<-lmer(richness ~ Trap + Date + (1 | Site:Replicate), data=beetle)
+summary(richness.model_beetle)
+Anova(richness.model_beetle)
+AIC(richness.model_beetle)
+#pairwise comparison 
+rich.emm_beetle<-emmeans(richness.model_beetle,pairwise~Trap)
+rich.emm_beetle
+#results: no differences
+rich.cld_beetle<-multcomp::cld(rich.emm_beetle, alpha = 0.05, Letters = LETTERS)
+rich.cld_beetle
+
+#beetle abundance
+##AIC 77 
+abundance.model_beetle<-lmer(abundance ~ Trap + Date + (1 | Site:Replicate), data=beetle)
+summary(abundance.model_beetle)
+Anova(abundance.model_beetle)
+AIC(abundance.model_beetle)
+#pairwise comparison 
+abun.emm_beetle<-emmeans(abundance.model_beetle,pairwise~Trap)
+abun.emm_beetle
+#results: no differences
+abun.cld_beetle<-multcomp::cld(abun.emm_beetle, alpha = 0.05, Letters = LETTERS)
+abun.cld_beetle
+
+#beetle Shannon diversity
+##AIC 54
+diversity.model_beetle<-lmer(diversity ~ Trap + Date + (1 | Site:Replicate), data=beetle)
+summary(diversity.model_beetle)
+Anova(diversity.model_beetle)
+AIC(diversity.model_beetle)
+#pairwise comparison 
+div.emm_beetle<-emmeans(diversity.model_beetle,pairwise~Trap)
+div.emm_beetle
+#results: no differences
+div.cld_beetle<-multcomp::cld(div.emm_beetle, alpha = 0.05, Letters = LETTERS)
+div.cld_beetle
+
+#beetle inv simpson diversity
+##AIC 77
+simpdiversity.model_beetle<-lmer(simpdiversity ~ Trap + Date + (1 | Site:Replicate), data=beetle)
+summary(simpdiversity.model_beetle)
+Anova(simpdiversity.model_beetle)
+AIC(simpdiversity.model_beetle)
+#pairwise comparison 
+sdiv.emm_beetle<-emmeans(simpdiversity.model_beetle,pairwise~Trap)
+sdiv.emm_beetle
+#results: no differences
+sdiv.cld_beetle<-multcomp::cld(sdiv.emm_beetle, alpha = 0.05, Letters = LETTERS)
+sdiv.cld_beetle
+
+#beetle evenness
+##AIC -193 
+evenness.model_beetle<-lmer(evenness ~ Trap + Date + (1 | Site:Replicate), data=beetle)
+summary(evenness.model_beetle)
+Anova(evenness.model_beetle)
+AIC(evenness.model_beetle)
+#pairwise comparison 
+even.emm_beetle<-emmeans(evenness.model_beetle,pairwise~Trap)
+even.emm_beetle
+#results: 
+even.cld_beetle<-multcomp::cld(even.emm_beetle, alpha = 0.05, Letters = LETTERS)
+even.cld_beetle
+
+###########
+library(ggplot2)
+#beetle abundance plot
+abundance.plot_beetle<-ggplot(beetle, aes(x =Trap, y = abundance, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  ylim(0, NA)+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(x="", y="")+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=abun.cld_beetle, aes(y = 5, label = .group))
+abundance.plot_beetle
+
+#beetle richness plot
+richness.plot_beetle<-ggplot(beetle, aes(x =Trap, y = richness, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  ylim(0, NA)+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(x="", y="")+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=rich.cld_beetle, aes(y = 20, label = .group))
+richness.plot_beetle
+
+#beetle Shannon siversity plot
+diversity.plot_beetle<-ggplot(beetle, aes(x =Trap, y = diversity, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  ylim(0, NA)+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(x="", y="")+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=div.cld_beetle, aes(y = 2.5, label = .group))
+diversity.plot_beetle
+
+#beetle inv Simpson diversity plot
+simpdiversity.plot_beetle<-ggplot(beetle, aes(x =Trap, y = simpdiversity, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  ylim(0, NA)+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(x="", y="")+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=sdiv.cld_beetle, aes(y = 7, label = .group))
+simpdiversity.plot_beetle
+
+#beetle evenness plot
+evenness.plot_beetle<-ggplot(beetle, aes(x =Trap, y = evenness, fill=Trap))+
+  geom_boxplot()+
+  theme_bw()+
+  ylim(0, NA)+
+  theme(legend.position ="NULL")+
+  theme(axis.text.x=element_blank())+
+  labs(x="", y="")+
+  scale_fill_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  geom_text(data=even.cld_beetle, aes(y = 1.1, label = .group))
+evenness.plot_beetle
+
+#Mush order plots together
+library(ggpubr) 
+beetlefigure <- ggarrange(richness.plot_beetle, abundance.plot_beetle, diversity.plot_beetle, simpdiversity.plot_beetle, evenness.plot_beetle,
+                         labels = c("A", "B", "C", "D", "E"),
+                         ncol = 3, nrow = 2,
+                         common.legend = TRUE, legend = "bottom")
+pdf("beetle.pdf", height=6, width=8) #height and width in inches
+beetlefigure
+dev.off()
+
+beetlefigure
+
+####
+#species accumulation
+library (BiodiversityR)
+library(ggplot2)
+
+#individual curves for each trap type
+pitfall.com.matrix<-pitfall_beetle[c(4:18)]
+pitfall_curve<-accumresult(pitfall.com.matrix, method = "exact", permutations = 1000)
+
+jar.com.matrix<-jar_beetle[c(4:18)]
+jar_curve<-accumresult(jar.com.matrix, method = "exact", permutations = 1000)
+
+ramp.com.matrix<-ramp_beetle[c(4:18)]
+ramp_curve<-accumresult(ramp.com.matrix, method = "exact", permutations = 1000)
+
+sticky.com.matrix<-sticky_beetle[c(4:18)]
+sticky_curve<-accumresult(sticky.com.matrix, method = "exact", permutations = 1000)
+
+#first-order jackknife estimates are based on the number of singletons
+#second-order jackknife estimates are based on the number of singletons and doubletons
+
+#calculates species richness for each sample
+specnumber(com.matrix_beetle) #ranges from 1 to 3
+
+#calculates species richness by treatment (trap)
+specnumber(com.matrix_beetle, groups = beetle$Trap) #jar=3; pitfall=3; ramp=8; sticky=9
+
+#total richness and jackknife
+rich <- diversityresult(com.matrix_beetle, y=NULL, index = "richness")
+rich # 15
+j1 <- diversityresult(com.matrix_beetle, y=NULL, index = "jack1")
+j1 # 18.878788
+#79%
+j2 <- diversityresult(com.matrix_beetle, y=NULL, index = "jack2")
+j2 # 18.996212
+#79%
+
+#jar jackknife; richness = 3
+j1.j <- diversityresult(jar.com.matrix, y=NULL, index = "jack1")
+j1.j # 3.8333333
+#78%
+j2.j <- diversityresult(jar.com.matrix, y=NULL, index = "jack2")
+j2.j #3.9666667
+#76%
+
+#pitfall jackknife; richness = 3
+j1.p <- diversityresult(pitfall.com.matrix, y=NULL, index = "jack1")
+j1.p # 3.8333333
+#78%
+j2.p <- diversityresult(pitfall.com.matrix, y=NULL, index = "jack2")
+j2.p # 3.9666667
+#76%
+
+#ramp jackknife; richness = 8
+j1.r <- diversityresult(ramp.com.matrix, y=NULL, index = "jack1")
+j1.r # 11.555556
+#69%
+j2.r <- diversityresult(ramp.com.matrix, y=NULL, index = "jack2")
+j2.r # 13.305556
+#60%
+
+#sticky jackknife; richness = 9
+j1.s <- diversityresult(sticky.com.matrix, y=NULL, index = "jack1")
+j1.s # 11.75
+#77%
+j2.s <- diversityresult(sticky.com.matrix, y=NULL, index = "jack2")
+j2.s # 11.219697
+#80%
+
+#BiodiversityR::accumcomp
+Accum.1_beetle <- accumcomp(com.matrix_beetle, y=env.matrix_beetle, factor='Trap', 
+                     method='random', conditioned=FALSE, plotit=FALSE)
+Accum.1_beetle
+
+#BiodiversityR::accumcomp.long
+accum.long1_beetle <- accumcomp.long(Accum.1_beetle, ci=NA, label.freq=5)
+head(accum.long1_beetle)
+
+#plot
+#empty canvas
+BioR.theme <- theme(
+  panel.background = element_blank(),
+  panel.border = element_blank(),
+  panel.grid = element_blank(),
+  axis.line = element_line("gray25"),
+  text = element_text(size = 12),
+  axis.text = element_text(size = 10, colour = "gray25"),
+  axis.title = element_text(size = 14, colour = "gray25"),
+  legend.title = element_text(size = 14),
+  legend.text = element_text(size = 14),
+  legend.key = element_blank())
+
+beetle_accum <- ggplot(data=accum.long1_beetle, aes(x = Sites, y = Richness, ymax = UPR, ymin = LWR)) + 
+  scale_x_continuous(expand=c(0, 1), sec.axis = dup_axis(labels=NULL, name=NULL)) +
+  scale_y_continuous(sec.axis = dup_axis(labels=NULL, name=NULL)) +
+  scale_color_manual(values=c("#009E73","#E69F00","#F0E442","#CC79A7"))+
+  scale_shape_manual(values=c(19,17,15,25))+
+  geom_line(aes(colour=Grouping), size=0.1) +
+  geom_ribbon(aes(colour=Grouping, fill=after_scale(alpha(colour, 0.3))), 
+              show.legend=FALSE, linetype = 0) + 
+  geom_point(data=subset(accum.long1_beetle, labelit==TRUE), 
+             aes(colour=Grouping, shape=Grouping), size=3) +
+  BioR.theme +
+  labs(x = "Number of samples", y = "", colour = "Trap", shape = "Trap")
+beetle_accum
+
+pdf("beetle_accum.pdf", height=6, width=8) #height and width in inches
+beetle_accum
+dev.off()
 
 
+#######
 ## code to check assumptions
 
 if (!suppressWarnings(require(nortest))) install.packages("nortest")
@@ -1437,9 +2031,9 @@ outlierTest(evenness.model_order)
 influenceIndexPlot(evenness.model_order, vars = c("Cook"), id = list(n = 3))
 
 ###
-#Mobility
+#Functional
 
-##Mobility richness
+##Functional richness
 
 dotchart(insects$richness, main = "richness", group = insects$Trap) # way to visualize outliers
 
@@ -1471,7 +2065,7 @@ densityPlot(rstudent(richness.model)) # check density estimate of the distributi
 outlierTest(richness.model)
 influenceIndexPlot(richness.model, vars = c("Cook"), id = list(n = 3))
 
-##Mobility abundance
+##Functional abundance
 
 dotchart(insects$abundance, main = "abundance", group = insects$Trap) # way to visualize outliers
 
@@ -1504,7 +2098,7 @@ densityPlot(rstudent(abundance.model)) # check density estimate of the distribut
 outlierTest(abundance.model)
 influenceIndexPlot(abundance.model, vars = c("Cook"), id = list(n = 3))
 
-##Mobility diversity
+##Functional diversity
 
 dotchart(insects$diversity, main = "diversity", group = insects$Trap) # way to visualize outliers
 
@@ -1536,7 +2130,7 @@ densityPlot(rstudent(diversity.model)) # check density estimate of the distribut
 outlierTest(diversity.model)
 influenceIndexPlot(diversity.model, vars = c("Cook"), id = list(n = 3))
 
-##Mobility inv simpson diversity
+##Functional inv simpson diversity
 
 dotchart(insects$simpdiversity, main = "simpdiversity", group = insects$Trap) # way to visualize outliers
 
@@ -1568,7 +2162,7 @@ densityPlot(rstudent(diversity.model)) # check density estimate of the distribut
 outlierTest(diversity.model)
 influenceIndexPlot(diversity.model, vars = c("Cook"), id = list(n = 3))
 
-##Mobility evenness
+##Functional evenness
 
 dotchart(insects$evenness, main = "evenness", group = insects$Trap) # way to visualize outliers
 
@@ -2071,35 +2665,186 @@ densityPlot(rstudent(evenness.model_intermediate)) # check density estimate of t
 outlierTest(evenness.model_intermediate)
 influenceIndexPlot(evenness.model_intermediate, vars = c("Cook"), id = list(n = 3))
 
+##
+
+#Beetles
+
+##beetle richness
+
+dotchart(beetle$richness, main = "richness", group = beetle$Trap) # way to visualize outliers
+
+with(beetle, ad.test(richness)) #Anderson-darling test for normality (good for small sample sizes), low p-value means assumption is violated
+#p-value = < 2.2e-16
+
+with(beetle, bartlett.test(richness ~ Trap)) #Bartlett test for homogeneity of variance, low p-value means assumption is violated
+#p-value = < 2.2e-16
+
+richness.model_beetle<-lmer(richness ~ Trap + Date + (1 | Site), data=beetle)
+summary(richness.model_beetle)
+anova(richness.model_beetle)
+AIC (richness.model_beetle)
+
+plot(richness.model_beetle) # check distribution of residuals
+
+# check normality with these figures, are there outliers at either end
+qqnorm(resid(richness.model_beetle))
+qqline(resid(richness.model_beetle))
+
+plot(simulateResiduals(richness.model_beetle)) # another way to check for normality and homogeneity of variance
+#KS test: p = 0.40783
+#dispersion test: p = 0.28
+#outlier test: p = 1
+#no significant problems detected btw residual and predicted
+
+densityPlot(rstudent(richness.model_beetle)) # check density estimate of the distribution of residuals
+
+# check for outliers influencing the data
+outlierTest(richness.model_beetle)
+influenceIndexPlot(richness.model_beetle, vars = c("Cook"), id = list(n = 3))
+
+#beetle abundance
+
+dotchart(beetle$abundance, main = "abundance", group = beetle$Trap) # way to visualize outliers
+
+with(beetle, ad.test(abundance)) #Anderson-darling test for normality (good for small sample sizes), low p-value means assumption is violated
+#p-value = < 2.2e-16
+
+with(beetle, bartlett.test(abundance ~ Trap)) #Bartlett test for homogeneity of variance, low p-value means assumption is violated
+#p-value = < 2.2e-16
+
+abundance.model_beetle<-lmer(abundance ~ Trap + Date + (1 | Site), data=beetle)
+summary(abundance.model_beetle)
+anova(abundance.model_beetle)
+
+plot(abundance.model_beetle) # check distribution of residuals
+
+# check normality with these figures, are there outliers at either end
+qqnorm(resid(abundance.model_beetle))
+qqline(resid(abundance.model_beetle))
+
+plot(simulateResiduals(abundance.model_beetle)) # another way to check for normailty and homogeneity of variance
+#KS test: p = 0.40783
+#dispersion test: p = 0.28
+#outlier test: p = 1
+#no significant problems detected btw residual and predicted
+
+densityPlot(rstudent(abundance.model_beetle)) # check density estimate of the distribution of residuals
+
+# check for outliers influencing the data
+outlierTest(abundance.model_beetle)
+influenceIndexPlot(abundance.model_beetle, vars = c("Cook"), id = list(n = 3))
+
+##beetle diversity
+
+dotchart(beetle$diversity, main = "diversity", group = beetle$Trap) # way to visualize outliers
+
+with(beetle, ad.test(diversity)) #Anderson-darling test for normality (good for small sample sizes), low p-value means assumption is violated
+#p-value = < 2.2e-16
+
+with(beetle, bartlett.test(diversity ~ Trap)) #Bartlett test for homogeneity of variance, low p-value means assumption is violated
+#p-value = < 2.2e-16
+
+diversity.model_beetle<-lmer(diversity ~ Trap + Date + (1 | Site), data=beetle)
+summary(diversity.model_beetle)
+anova(diversity.model_beetle)
+
+plot(diversity.model_beetle) # check distribution of residuals
+
+# check normality with these figures, are there outliers at either end
+qqnorm(resid(diversity.model_beetle))
+qqline(resid(diversity.model_beetle))
+
+plot(simulateResiduals(diversity.model_beetle)) # another way to check for normailty and homogeneity of variance
+#KS test: p = 0.79254
+#dispersion test: p = 0.28
+#outlier test: p = 1
+#no significant problems detected btw residual and predicted
+
+densityPlot(rstudent(diversity.model_beetle)) # check density estimate of the distribution of residuals
+
+# check for outliers influencing the data
+outlierTest(diversity.model_beetle)
+influenceIndexPlot(diversity.model_beetle, vars = c("Cook"), id = list(n = 3))
+
+##beetle evenness
+
+dotchart(beetle$evenness, main = "evenness", group = beetle$Trap) # way to visualize outliers
+
+with(beetle, ad.test(evenness)) #Anderson-darling test for normality (good for small sample sizes), low p-value means assumption is violated
+#p-value = 3.465e-06
+
+with(beetle, bartlett.test(evenness ~ Trap)) #Bartlett test for homogeneity of variance, low p-value means assumption is violated
+#p-value = 1
+
+evenness.model_beetle<-lmer(evenness ~ Trap + Date + (1 | Site), data=beetle)
+summary(evenness.model_beetle)
+anova(evenness.model_beetle)
+
+plot(evenness.model_beetle) # check distribution of residuals
+
+# check normality with these figures, are there outliers at either end
+qqnorm(resid(evenness.model_beetle))
+qqline(resid(evenness.model_beetle))
+
+plot(simulateResiduals(evenness.model_beetle)) # another way to check for normailty and homogeneity of variance
+#KS test: p = 0.2596
+#dispersion test: p = 0.096
+#outlier test: p = 1
+#no significant problems detected btw residual and predicted
+
+densityPlot(rstudent(evenness.model_beetle)) # check density estimate of the distribution of residuals
+
+# check for outliers influencing the data
+outlierTest(evenness.model_beetle)
+influenceIndexPlot(evenness.model_beetle, vars = c("Cook"), id = list(n = 3))
 
 #######
-
 #manuscript figures
 
 #Figure 1 - trap photos
 
-#Figure 2 - order and mobility boxplots
+#Figure 2 - step by step jar trap construction
+
+#Figure 3 - accumulation plots
+#a - order
+#b - functional 
+#c - beetles
+
+library(patchwork)
+figure3 <- order_accum / functional_accum / beetle_accum + plot_layout(guides = "collect") + plot_annotation(tag_levels = "A") & theme(legend.position = "bottom") 
+figure3
+pdf("Figure 3.pdf", height=6, width=6) #height and width in inches
+figure3
+dev.off()
+
+#Figure 4 - trap comparison box plots
 #a - order
 library(ggpubr) 
 orderfigure <- ggarrange(richness.plot_order, abundance.plot_order, diversity.plot_order, simpdiversity.plot_order, evenness.plot_order,
                          ncol = 5, nrow = 1)
 orderfigure
 
-#b - mobility 
-mobilityfigure <- ggarrange(richness.plot, abundance.plot, diversity.plot, simpdiversity.plot, evenness.plot,
+#b - functional 
+functionalfigure <- ggarrange(richness.plot, abundance.plot, diversity.plot, simpdiversity.plot, evenness.plot,
                               ncol = 5, nrow = 1)
-mobilityfigure
+functionalfigure
 
-figure2 <- ggarrange(orderfigure, functionalfigure,
+#c - beetle -- not using
+beetlefigure <- ggarrange(richness.plot_beetle, abundance.plot_beetle, diversity.plot_beetle, simpdiversity.plot_beetle, evenness.plot_beetle,
+                          ncol = 5, nrow = 1,
+                          common.legend = TRUE, legend = "bottom")
+beetlefigure
+
+figure4 <- ggarrange(orderfigure, functionalfigure,
                      labels = c("A", "B"),
                      ncol = 1, nrow = 2,
                      common.legend = TRUE, legend = "bottom")
-pdf("Figure 2.pdf", height=10, width=15) #height and width in inches
-figure2
+pdf("boxplots.pdf", height=10, width=15) #height and width in inches
+figure4
 dev.off()
-figure2
+figure4
 
-#Figure 3 - multipanel NMDS
+#Figure 5 - multipanel NMDS
 
 #if (!require(devtools)) {
   #install.packages("devtools")
@@ -2108,7 +2853,7 @@ figure2
 
 library(ggvegan)
 
-pdf("Figure 3.pdf", height=10, width=6)
+pdf("Figure 5.pdf", height=10, width=6)
 par(mfrow=c(3,1), mar=c(4.1, 4.8, 1.5, 8.1),xpd=TRUE) 
 
 plot(NMDS_order, disp='sites', type='n', xlim=c(-1,1), ylim=c(-1.5,1.5))
@@ -2140,24 +2885,40 @@ ordilabel(NMDS, display="species", select =which (include_func==TRUE & intermedi
 text(-2.5, 1.43, "B", cex=2)
 dev.off()
 
-#Figure 4 - flying vs crawling vs intermediate 
-figure4 <- ggarrange(abundance.plot_flying,abundance.plot_crawling,abundance.plot_intermediate,richness.plot_flying,richness.plot_crawling,richness.plot_intermediate,
+#Figure 6 - flying vs crawling vs intermediate (functional level)
+figure6 <- ggarrange(abundance.plot_flying,abundance.plot_crawling,abundance.plot_intermediate,richness.plot_flying,richness.plot_crawling,richness.plot_intermediate,
                      diversity.plot_flying,diversity.plot_crawling,diversity.plot_intermediate,simpdiversity.plot_flying, simpdiversity.plot_crawling, simpdiversity.plot_intermediate,
                      evenness.plot_flying,evenness.plot_crawling,evenness.plot_intermediate,
                      #labels = c("A", "B", "C", "D", "E", "F"),
                      ncol = 3, nrow = 5,
                      common.legend = TRUE, legend = "bottom")
-figure4
-pdf("Figure 4.pdf", height=10, width=8) #height and width in inches
-figure4
+figure6
+pdf("Figure 6.pdf", height=10, width=8) #height and width in inches
+figure6
 dev.off()
 
+#Supplementary figure 1 - trap size vs mean catch
+#bring in data
+size <- read.csv("https://raw.githubusercontent.com/katiemmanning/jar_ramp_trap/main/Data/Supp%20fig%201%20data.csv",na.strings = NULL)
+library(ggplot2)
 
-###SUPPLEMENTARY
+trapsize <- ggplot(size, aes(x=Surface.area, y=Mean.catch, color=Trap)) +
+  theme_classic() +
+  geom_point(size=4.5, shape=16)+
+  labs(x = bquote("Trap surface area"~(cm^2)), y = "Arthropods captured")+
+  geom_errorbar(aes(ymin=Mean.catch-SD, ymax=Mean.catch+SD),size=1, width=3)+
+  scale_color_manual(values=c("#009E73","#E69F00","#CC79A7","#F0E442"))
+trapsize
 
-#Figure S1: Step by step photos of jar ramp trap construction
+pdf("Supp figure 1.pdf", height=6, width=8) #height and width in inches
+trapsize
+dev.off()
+
+###SUPP TABLES
+
 #Table S1: Total (raw) abundances at the order level of identification
-#Table S2: Total (raw) abundances at the mobility level of identification
-#Table S3: Results from generalized linear mixed effect models for each level of identification, with significant values displayed. 
-#Table S4: Results from generalized linear mixed effect models for each mobility classification, with significant values displayed.
+#Table S2: Total (raw) abundances at the functional level of identification
+#Table S3: Total (raw) abundances at the focal taxa level of identification
+#Table S4: Results from generalized linear mixed effect models for each level of identification, with significant values displayed. 
+#Table S5: Results from generalized linear mixed effect models for each mobility classification, with significant values displayed.
 
